@@ -31,7 +31,7 @@ const Main = () => {
       <div className="table">
         <div className="colomuns info">
           <div className="item">j</div>
-          <span>jlvghcjhxjgdzhf</span>
+          <span>Парк 'П'</span>
         </div>
         <div className="colomuns">
           <div className="item">1</div>
@@ -65,7 +65,7 @@ const Main = () => {
             e.map(
               el=>{
                 return(
-              <div className="train">
+              <div className="train" >
                 <span>{el[0]}</span>
                 <img src={'/trains/'+el[1]+'/'+el[6]+'/'+el[3]+'/1.svg'}/>
               </div>

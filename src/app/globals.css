@@ -12,6 +12,10 @@
   background-color: aqua;
 }
 
+.table .item:has(.trains){
+  justify-content: start;
+}
+
 .trains{
   display: flex;
   gap: 2px;
@@ -25,8 +29,9 @@
 .train span{
   position: absolute;
   font-size: 9px;
-  transform: translate(18px, 10px);
+  transform: translate(18px, 5px);
   font-weight: 700;
+  color: rgb(145, 0, 0);
 }
 
 .table .info{
