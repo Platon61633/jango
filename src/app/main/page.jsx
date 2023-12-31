@@ -1,5 +1,6 @@
 "use client";
 import axios from "axios";
+import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
 
 
@@ -7,6 +8,7 @@ const Main = () => {
     const [Trains, SetTrains] = useState([])
     // const [WT, SetWT] = useState()
     const [RightB, SetRightB] = useState(false)
+    const [IdTrain, SetIdTrain] = useState(1)
 
   useEffect(()=>{
     axios.get('https://evraz-back.vercel.app/api?need=ns')
@@ -26,6 +28,12 @@ const Main = () => {
   }
   ,[])
 
+  const GetIdTrain = (type)=>{
+    if (type != 'id') {
+      SetIdTrain(IdTrain+1)
+    }
+    return IdTrain
+  }
   
 
   return (
@@ -42,6 +50,7 @@ const Main = () => {
               <div><span>Оператор</span><span>???</span></div>
               <div><span>Тип вагона</span><span>{RightB[0][4]}</span></div>
               <div><span>Гружённый</span><span>{RightB[0][6]=='POROZHNIE'?<span>Нет</span>:<span>Да</span>}</span></div>
+              <div><span>Позиция</span><span>{RightB[0][2]}</span></div>
             </div>
           </p>
         </div>
@@ -79,17 +88,24 @@ const Main = () => {
       {Trains.map(
         e=>
         <div className="item">
-          {e?<div className='trains'>{
+
+          {e?
+          // <Reorder.Group as='' axys='x' values={e} onReorder={SetTrains}>
+          <div className='trains'>{
             e.map(
               el=>{
+                console.log(el[0])
                 return(
-              <div className="train" onContextMenu={(e)=>SetRightB([el,e.clientX, e.clientY])}>
+              // <Reorder.Item key={el[0]} value={el}>
+              <div className="train" id={el[0]} onContextMenu={(e)=>SetRightB([el,e.clientX, e.clientY])}>
                 <span>{el[0]}</span>
                 <img src={'/trains/'+el[1]+'/'+el[6]+'/'+el[3]+'/1.svg'} />
               </div>
+            // </Reorder.Item>
             )}
             )
           }</div>
+          // </Reorder.Group>
           :<div><br/></div>}
         </div>
       )}

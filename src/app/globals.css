@@ -10,6 +10,7 @@
   margin: 10px 0;
   height: 42px;
   background-color: aqua;
+  list-style-type: none;
 }
 
 .table .item:has(.trains){
