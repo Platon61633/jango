@@ -1,7 +1,7 @@
 .table{
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 50px;
+  gap: 20px;
 }
 .table .item{
   display: flex;
@@ -11,6 +11,10 @@
   height: 42px;
   background-color: aqua;
   list-style-type: none;
+}
+
+.table .columns:nth-child(5){
+  width: min-content(80vw);
 }
 
 .table .item:has(.trains){
@@ -32,11 +36,14 @@
 
 .train span{
   position: absolute;
-  z-index: 1;
   font-size: 9px;
   transform: translate(18px, 5px);
   font-weight: 700;
   color: rgb(145, 0, 0);
+}
+
+.nothing{
+  display: none;
 }
 
 .table .info{
@@ -82,4 +89,19 @@
 .RightB .infor div{
   display: flex;
   justify-content: space-between;
+}
+
+.FlyTrain{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+}
+
+.FlyTrain span{
+  position: absolute;
+  z-index: 1;
+  font-size: 9px;
+  transform: translate(18px, 5px);
+  font-weight: 700;
+  color: rgb(145, 0, 0);
 }

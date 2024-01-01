@@ -1,14 +1,18 @@
 "use client";
 import axios from "axios";
 import { Reorder } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 
 const Main = () => {
     const [Trains, SetTrains] = useState([])
     // const [WT, SetWT] = useState()
     const [RightB, SetRightB] = useState(false)
-    const [IdTrain, SetIdTrain] = useState(1)
+    // const [IdTrain, SetIdTrain] = useState(1)
+    const [FlyTrain, SetFlyTrain] = useState(false)
+    const [PosTrain, SetPosTrain] = useState([0,0])
+
+    const trains = useRef(null)
 
   useEffect(()=>{
     axios.get('https://evraz-back.vercel.app/api?need=ns')
@@ -28,12 +32,12 @@ const Main = () => {
   }
   ,[])
 
-  const GetIdTrain = (type)=>{
-    if (type != 'id') {
-      SetIdTrain(IdTrain+1)
-    }
-    return IdTrain
-  }
+  // const GetIdTrain = (type)=>{
+  //   if (type != 'id') {
+  //     SetIdTrain(IdTrain+1)
+  //   }
+  //   return IdTrain
+  // }
   
 
   return (
@@ -84,22 +88,61 @@ const Main = () => {
           <div className="item">2</div>
           <div className="item">3</div>
         </div>
-      <div className="columns">
+      <div className="columns" onMouseMove={e=>
+      { if (FlyTrain) SetPosTrain([e.clientX, e.clientY])}}
+      style={FlyTrain?{cursor: 'grab'}:{}}
+      >
+
+
+      {FlyTrain?
+            // <div className="DispFlyTrain">
+              // <div className="FlyTrain"  style={{left: PosTrain[0]-10, top: PosTrain[1]-15}}>
+              <div className="FlyTrain"  style={{left: PosTrain[0]+2, top: PosTrain[1]-15}}>
+
+                <span>{FlyTrain.number}</span>
+                <img src={FlyTrain.img} />
+              </div>
+            //</div>
+            
+            :<></>
+            }
+
+            
       {Trains.map(
         e=>
-        <div className="item">
+        <div className="item" >
+          
 
           {e?
           // <Reorder.Group as='' axys='x' values={e} onReorder={SetTrains}>
-          <div className='trains'>{
+          <div className='trains' ref={trains}>
+            
+            {
             e.map(
               el=>{
-                console.log(el[0])
                 return(
               // <Reorder.Item key={el[0]} value={el}>
-              <div className="train" id={el[0]} onContextMenu={(e)=>SetRightB([el,e.clientX, e.clientY])}>
+              <div className="train" onDoubleClick={
+                (koordi)=>
+                {
+                  const xy = {x: koordi.clientX, y: koordi.clientY}
+                  if (FlyTrain) {
+                  console.log(Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)+1);
+                  console.log(Math.floor((xy.y-5)/52)+1);
+                }else{
+                  koordi.target.parentNode.remove()
+                SetFlyTrain({
+                number: el[0],
+                ...xy,
+                img: '/trains/'+el[1]+'/'+el[6]+'/'+el[3]+'/1.svg', 
+                })
+                SetPosTrain([xy.x, xy.y])
+              }
+              }} 
+                onContextMenu={(e)=>SetRightB([el,e.clientX, e.clientY])}>
                 <span>{el[0]}</span>
                 <img src={'/trains/'+el[1]+'/'+el[6]+'/'+el[3]+'/1.svg'} />
+                
               </div>
             // </Reorder.Item>
             )}
