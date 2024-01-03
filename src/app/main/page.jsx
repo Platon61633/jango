@@ -5,88 +5,31 @@ import { useEffect, useRef, useState } from "react";
 
 
 const Main = () => {
-    const [Trains, SetTrains] = useState([])
-    // const [WT, SetWT] = useState()
-    const [RightB, SetRightB] = useState(false)
-    // const [IdTrain, SetIdTrain] = useState(1)
-    const [FlyTrain, SetFlyTrain] = useState(false)
-    const [PosTrain, SetPosTrain] = useState([0,0])
+  //   const [Trains, SetTrains] = useState([])
+  //   // const [WT, SetWT] = useState()
+  //   const [RightB, SetRightB] = useState(false)
+  //   // const [IdTrain, SetIdTrain] = useState(1)
+  //   const [FlyTrain, SetFlyTrain] = useState(false)
+  //   const [PosTrain, SetPosTrain] = useState([0,0])
 
-    const trains = useRef(null)
+  //   const trains = useRef(null)
 
-  useEffect(()=>{
-    axios.get("https://evraz-back.vercel.app/api?need=ns")
-    .then(e=>SetTrains(e.data))
-    window.addEventListener("contextmenu", function(e) { e.preventDefault(); })
+  // useEffect(()=>{
+  //   axios.get("https://evraz-back.vercel.app/api?need=ns")
+  //   .then(e=>SetTrains(e.data))
+  //   window.addEventListener("contextmenu", function(e) { e.preventDefault(); })
 
-    // for (let i = 0; i < Trains.length; i++) {
-    //   if (Trains[i]==0) {
-    //     console.log(0);
-    //   }else{
-    //   for (let j = 0; j < Trains[i].length; j++) {
-    //     console.log(Trains[i][j][3]);
-    //   }
-    // }
-      
-    // }
-  }
-  ,[])
-
-  // const GetIdTrain = (type)=>{
-  //   if (type != "id") {
-  //     SetIdTrain(IdTrain+1)
-  //   }
-  //   return IdTrain
   // }
+  // ,[])
+
   
-  const DbClick = (koordi)=>
-  {
-    const xy = {x: koordi.clientX, y: koordi.clientY}
-    if (FlyTrain) {
-      let TrainArr = Array.from(Trains[Math.floor((xy.y-5)/52)])
-      const j = Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)
-      let TrainArr1 = TrainArr.slice(0, j)
+ 
 
-      console.log(j);
-
-      TrainArr1.push(FlyTrain.train)
-
-      console.log(TrainArr.slice(j));
-      console.log(TrainArr1.concat(TrainArr.splice(j)));
-
-
-      
-
-      // let TrainsArr = Trains
-      // const i = Math.floor((xy.y-5)/52)
-      // let TrainsArr1 = TrainsArr.slice(0,i)
-      // TrainsArr1.push(TrainArr1.concat(TrainArr.slice(j-1)))
-
-      // console.log(TrainsArr1.concat(TrainsArr.slice(i)));
-
-      
-
-      
-
-
-    // console.log(Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)+1);
-    // console.log(Trains[Math.floor((xy.y-5)/52)][Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)]);
-  }else{
-    koordi.target.parentNode.remove()
-  SetFlyTrain({
-  train: el,
-  way: way,
-  ...xy,
-  img: "/trains/"+el[1]+"/"+el[6]+"/"+el[3]+"/1.svg", 
-  })
-  SetPosTrain([xy.x, xy.y])
-}
-}
 
 
   return (
     <div className="App">
-      {RightB?
+      {/* {RightB?
         <div className="RightB" onClick={()=>SetRightB(false)}>
           <p onClick={e=>e.stopPropagation()} style={{top: RightB[2]-24, left: RightB[1]-8}}>
             
@@ -102,7 +45,7 @@ const Main = () => {
             </div>
           </p>
         </div>
-        :<></>}
+        :<></>} */}
       <div className="table">
         <div className="colomuns info">
           <div className="item">j</div>
@@ -132,7 +75,7 @@ const Main = () => {
           <div className="item">2</div>
           <div className="item">3</div>
         </div>
-      <div className="columns" onMouseMove={e=>
+      {/* <div className="columns" onMouseMove={e=>
       { if (FlyTrain) SetPosTrain([e.clientX, e.clientY])}}
       style={FlyTrain?{cursor: "grab"}:{}}
       >
@@ -238,7 +181,7 @@ const Main = () => {
           :<div><br/></div>}
         </div>
       )}
-      </div>
+      </div> */}
 
         <div className="colomuns">
           <div className="item">4</div>
