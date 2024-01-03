@@ -39,6 +39,50 @@ const Main = () => {
   //   return IdTrain
   // }
   
+  const DbClick = (koordi)=>
+  {
+    const xy = {x: koordi.clientX, y: koordi.clientY}
+    if (FlyTrain) {
+      let TrainArr = Array.from(Trains[Math.floor((xy.y-5)/52)])
+      const j = Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)
+      let TrainArr1 = TrainArr.slice(0, j)
+
+      console.log(j);
+
+      TrainArr1.push(FlyTrain.train)
+
+      console.log(TrainArr.slice(j));
+      console.log(TrainArr1.concat(TrainArr.splice(j)));
+
+
+      
+
+      // let TrainsArr = Trains
+      // const i = Math.floor((xy.y-5)/52)
+      // let TrainsArr1 = TrainsArr.slice(0,i)
+      // TrainsArr1.push(TrainArr1.concat(TrainArr.slice(j-1)))
+
+      // console.log(TrainsArr1.concat(TrainsArr.slice(i)));
+
+      
+
+      
+
+
+    // console.log(Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)+1);
+    // console.log(Trains[Math.floor((xy.y-5)/52)][Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)]);
+  }else{
+    koordi.target.parentNode.remove()
+  SetFlyTrain({
+  train: el,
+  way: way,
+  ...xy,
+  img: '/trains/'+el[1]+'/'+el[6]+'/'+el[3]+'/1.svg', 
+  })
+  SetPosTrain([xy.x, xy.y])
+}
+}
+
 
   return (
     <div className="App">
@@ -99,7 +143,7 @@ const Main = () => {
               // <div className="FlyTrain"  style={{left: PosTrain[0]-10, top: PosTrain[1]-15}}>
               <div className="FlyTrain"  style={{left: PosTrain[0]+2, top: PosTrain[1]-15}}>
 
-                <span>{FlyTrain.number}</span>
+                <span>{FlyTrain.train[0]}</span>
                 <img src={FlyTrain.img} />
               </div>
             //</div>
@@ -109,7 +153,7 @@ const Main = () => {
 
             
       {Trains.map(
-        e=>
+        (e, way)=>
         <div className="item" >
           
 
@@ -126,19 +170,61 @@ const Main = () => {
                 (koordi)=>
                 {
                   const xy = {x: koordi.clientX, y: koordi.clientY}
+                  let TrainsArr = Array.from(Trains)
                   if (FlyTrain) {
-                  console.log(Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)+1);
-                  console.log(Math.floor((xy.y-5)/52)+1);
+                    let TrainArr = Array.from(Trains[Math.floor((xy.y-5)/52)])
+                    const j = Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)
+                    const i = Math.floor((xy.y-5)/52)
+                    TrainArr.splice(j, 0, FlyTrain.train)
+                    // console.log(TrainArr);
+
+                    TrainsArr.splice(i, 1, TrainArr)
+                    SetFlyTrain(false)
+
+
+                    
+                    // let TrainArr1 = TrainArr.slice(0, j)
+
+                    // console.log(j);
+
+                    // TrainArr1.push(FlyTrain.train)
+
+                    // console.log(TrainArr.slice(j));
+                    // console.log(TrainArr1.concat(TrainArr.splice(j)));
+
+                    
+
+                    
+
+                    
+                    
+                    // let TrainsArr1 = TrainsArr.slice(0,i)
+                    // TrainsArr1.push(TrainArr1.concat(TrainArr.slice(j-1)))
+
+                    // console.log(TrainsArr1.concat(TrainsArr.slice(i)));
+
+                    
+
+                    
+
+
+                  // console.log(Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)+1);
+                  // console.log(Trains[Math.floor((xy.y-5)/52)][Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)]);
                 }else{
-                  koordi.target.parentNode.remove()
+                  delete TrainsArr[way][el[2]-1]
+                  console.log(TrainsArr);
+                  // koordi.target.parentNode.remove()
                 SetFlyTrain({
-                number: el[0],
+                train: el,
+                way: way,
                 ...xy,
                 img: '/trains/'+el[1]+'/'+el[6]+'/'+el[3]+'/1.svg', 
                 })
                 SetPosTrain([xy.x, xy.y])
               }
-              }} 
+              SetTrains(TrainsArr)
+              }
+              } 
                 onContextMenu={(e)=>SetRightB([el,e.clientX, e.clientY])}>
                 <span>{el[0]}</span>
                 <img src={'/trains/'+el[1]+'/'+el[6]+'/'+el[3]+'/1.svg'} />
