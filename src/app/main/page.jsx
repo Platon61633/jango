@@ -154,7 +154,7 @@ const Main = () => {
             
       {Trains.map(
         (e, way)=>
-        <div className="item" >
+        <div className="item" key={way}>
           
 
           {e?
@@ -166,7 +166,7 @@ const Main = () => {
               el=>{
                 return(
               // <Reorder.Item key={el[0]} value={el}>
-              <div className="train" onDoubleClick={
+              <div className="train" key={el[2]}  onDoubleClick={
                 (koordi)=>
                 {
                   const xy = {x: koordi.clientX, y: koordi.clientY}
