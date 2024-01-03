@@ -5,22 +5,22 @@ import { useEffect, useRef, useState } from "react";
 
 
 const Main = () => {
-  //   const [Trains, SetTrains] = useState([])
-  //   // const [WT, SetWT] = useState()
-  //   const [RightB, SetRightB] = useState(false)
-  //   // const [IdTrain, SetIdTrain] = useState(1)
-  //   const [FlyTrain, SetFlyTrain] = useState(false)
-  //   const [PosTrain, SetPosTrain] = useState([0,0])
+    const [Trains, SetTrains] = useState([])
+    // const [WT, SetWT] = useState()
+    const [RightB, SetRightB] = useState(false)
+    // const [IdTrain, SetIdTrain] = useState(1)
+    const [FlyTrain, SetFlyTrain] = useState(false)
+    const [PosTrain, SetPosTrain] = useState([0,0])
 
-  //   const trains = useRef(null)
+    const trains = useRef(null)
 
-  // useEffect(()=>{
-  //   axios.get("https://evraz-back.vercel.app/api?need=ns")
-  //   .then(e=>SetTrains(e.data))
-  //   window.addEventListener("contextmenu", function(e) { e.preventDefault(); })
+  useEffect(()=>{
+    axios.get("https://evraz-back.vercel.app/api?need=ns")
+    .then(e=>SetTrains(e.data))
+    window.addEventListener("contextmenu", function(e) { e.preventDefault(); })
 
-  // }
-  // ,[])
+  }
+  ,[])
 
   
  
@@ -29,7 +29,7 @@ const Main = () => {
 
   return (
     <div className="App">
-      {/* {RightB?
+      {RightB?
         <div className="RightB" onClick={()=>SetRightB(false)}>
           <p onClick={e=>e.stopPropagation()} style={{top: RightB[2]-24, left: RightB[1]-8}}>
             
@@ -45,11 +45,11 @@ const Main = () => {
             </div>
           </p>
         </div>
-        :<></>} */}
+        :<></>}
       <div className="table">
         <div className="colomuns info">
           <div className="item">j</div>
-          <span>Парк "П"</span>
+          <span>Парк &quot;П&quot;</span>
         </div>
         <div className="colomuns">
           <div className="item">1</div>
@@ -75,7 +75,7 @@ const Main = () => {
           <div className="item">2</div>
           <div className="item">3</div>
         </div>
-      {/* <div className="columns" onMouseMove={e=>
+      <div className="columns" onMouseMove={e=>
       { if (FlyTrain) SetPosTrain([e.clientX, e.clientY])}}
       style={FlyTrain?{cursor: "grab"}:{}}
       >
@@ -181,7 +181,7 @@ const Main = () => {
           :<div><br/></div>}
         </div>
       )}
-      </div> */}
+      </div>
 
         <div className="colomuns">
           <div className="item">4</div>
