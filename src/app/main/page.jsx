@@ -15,7 +15,7 @@ const Main = () => {
     const trains = useRef(null)
 
   useEffect(()=>{
-    axios.get('https://evraz-back.vercel.app/api?need=ns')
+    axios.get("https://evraz-back.vercel.app/api?need=ns")
     .then(e=>SetTrains(e.data))
     window.addEventListener("contextmenu", function(e) { e.preventDefault(); })
 
@@ -33,7 +33,7 @@ const Main = () => {
   ,[])
 
   // const GetIdTrain = (type)=>{
-  //   if (type != 'id') {
+  //   if (type != "id") {
   //     SetIdTrain(IdTrain+1)
   //   }
   //   return IdTrain
@@ -77,7 +77,7 @@ const Main = () => {
   train: el,
   way: way,
   ...xy,
-  img: '/trains/'+el[1]+'/'+el[6]+'/'+el[3]+'/1.svg', 
+  img: "/trains/"+el[1]+"/"+el[6]+"/"+el[3]+"/1.svg", 
   })
   SetPosTrain([xy.x, xy.y])
 }
@@ -87,7 +87,7 @@ const Main = () => {
   return (
     <div className="App">
       {RightB?
-        <div className='RightB' onClick={()=>SetRightB(false)}>
+        <div className="RightB" onClick={()=>SetRightB(false)}>
           <p onClick={e=>e.stopPropagation()} style={{top: RightB[2]-24, left: RightB[1]-8}}>
             
             <h1>Вагон №{RightB[0][0]}</h1>
@@ -97,7 +97,7 @@ const Main = () => {
               <div><span>Собственник</span><span>{RightB[0][1]}</span></div>
               <div><span>Оператор</span><span>???</span></div>
               <div><span>Тип вагона</span><span>{RightB[0][4]}</span></div>
-              <div><span>Гружённый</span><span>{RightB[0][6]=='POROZHNIE'?<span>Нет</span>:<span>Да</span>}</span></div>
+              <div><span>Гружённый</span><span>{RightB[0][6]=="POROZHNIE"?<span>Нет</span>:<span>Да</span>}</span></div>
               <div><span>Позиция</span><span>{RightB[0][2]}</span></div>
             </div>
           </p>
@@ -106,7 +106,7 @@ const Main = () => {
       <div className="table">
         <div className="colomuns info">
           <div className="item">j</div>
-          <span>Парк 'П'</span>
+          <span>Парк "П"</span>
         </div>
         <div className="colomuns">
           <div className="item">1</div>
@@ -134,7 +134,7 @@ const Main = () => {
         </div>
       <div className="columns" onMouseMove={e=>
       { if (FlyTrain) SetPosTrain([e.clientX, e.clientY])}}
-      style={FlyTrain?{cursor: 'grab'}:{}}
+      style={FlyTrain?{cursor: "grab"}:{}}
       >
 
 
@@ -158,8 +158,8 @@ const Main = () => {
           
 
           {e?
-          // <Reorder.Group as='' axys='x' values={e} onReorder={SetTrains}>
-          <div className='trains' ref={trains}>
+          // <Reorder.Group as=" axys="x" values={e} onReorder={SetTrains}>
+          <div className="trains" ref={trains}>
             
             {
             e.map(
@@ -218,7 +218,7 @@ const Main = () => {
                 train: el,
                 way: way,
                 ...xy,
-                img: '/trains/'+el[1]+'/'+el[6]+'/'+el[3]+'/1.svg', 
+                img: "/trains/"+el[1]+"/"+el[6]+"/"+el[3]+"/1.svg", 
                 })
                 SetPosTrain([xy.x, xy.y])
               }
@@ -227,7 +227,7 @@ const Main = () => {
               } 
                 onContextMenu={(e)=>SetRightB([el,e.clientX, e.clientY])}>
                 <span>{el[0]}</span>
-                <img src={'/trains/'+el[1]+'/'+el[6]+'/'+el[3]+'/1.svg'} />
+                <img src={"/trains/"+el[1]+"/"+el[6]+"/"+el[3]+"/1.svg"} />
                 
               </div>
             // </Reorder.Item>
