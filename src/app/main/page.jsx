@@ -1,14 +1,11 @@
 "use client";
 import axios from "axios";
-import { Reorder } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 
 const Main = () => {
     const [Trains, SetTrains] = useState([])
-    // const [WT, SetWT] = useState()
     const [RightB, SetRightB] = useState(false)
-    // const [IdTrain, SetIdTrain] = useState(1)
     const [FlyTrain, SetFlyTrain] = useState(false)
     const [PosTrain, SetPosTrain] = useState([0,0])
 
@@ -82,34 +79,58 @@ const Main = () => {
 
 
       {FlyTrain?
-            // <div className="DispFlyTrain">
-              // <div className="FlyTrain"  style={{left: PosTrain[0]-10, top: PosTrain[1]-15}}>
               <div className="FlyTrain"  style={{left: PosTrain[0]+2, top: PosTrain[1]-15}}>
 
                 <span>{FlyTrain.train[0]}</span>
                 <img src={FlyTrain.img} />
               </div>
-            //</div>
-            
             :<></>
             }
 
             
       {Trains.map(
         (e, way)=>
-        <div className="item" key={way}>
+        <div className="item" key={way} onDoubleClick={
+
+          (koordi)=>{
+ 
+                  console.log(koordi)
+                  }
+ 
+                //   if (FlyTrain) {
+ 
+                //   const xy = {x: koordi.clientX, y: koordi.clientY}
+                //   let TrainsArr = Array.from(Trains)
+                //     let TrainArr = Array.from(Trains[Math.floor((xy.y-5)/52)])
+                //     const j = Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)
+                //     console.log(j);
+                //     // const i = Math.floor((xy.y-5)/52)
+                //     SetFlyTrain({...FlyTrain, train: [...FlyTrain.train, FlyTrain.train[2]=j+1]})
+                //     TrainArr.splice(j, 0, FlyTrain.train)
+
+                //     console.log(TrainArr);
+                //     // console.log(Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)+1);
+ 
+ 
+                //     TrainsArr.splice(Math.floor((xy.y-5)/52), 1, TrainArr)
+                //     SetFlyTrain(false)
+                //     SetTrains(TrainsArr)
+ 
+                //   }
+                // }
+              }>
           
 
           {e?
-          // <Reorder.Group as=" axys="x" values={e} onReorder={SetTrains}>
           <div className="trains" ref={trains}>
             
             {
             e.map(
               el=>{
+                
                 return(
-              // <Reorder.Item key={el[0]} value={el}>
-              <div className="train" key={el[2]}  onDoubleClick={
+                  <>
+              {el?<div className="train" key={el[2]}  onDoubleClick={
                 (koordi)=>
                 {
                   const xy = {x: koordi.clientX, y: koordi.clientY}
@@ -118,45 +139,28 @@ const Main = () => {
                     let TrainArr = Array.from(Trains[Math.floor((xy.y-5)/52)])
                     const j = Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)
                     const i = Math.floor((xy.y-5)/52)
+                    SetFlyTrain({...FlyTrain, train: [...FlyTrain.train, FlyTrain.train[2]=j]})
+                    console.log(FlyTrain.train, 'kl');
                     TrainArr.splice(j, 0, FlyTrain.train)
-                    // console.log(TrainArr);
+                     for (let index = j; index < TrainArr.length; index++) {
+                     if (TrainArr[index]) TrainArr[index][2]++
+                   }
 
                     TrainsArr.splice(i, 1, TrainArr)
                     SetFlyTrain(false)
-
-
-                    
-                    // let TrainArr1 = TrainArr.slice(0, j)
-
-                    // console.log(j);
-
-                    // TrainArr1.push(FlyTrain.train)
-
-                    // console.log(TrainArr.slice(j));
-                    // console.log(TrainArr1.concat(TrainArr.splice(j)));
-
                     
 
                     
 
-                    
-                    
-                    // let TrainsArr1 = TrainsArr.slice(0,i)
-                    // TrainsArr1.push(TrainArr1.concat(TrainArr.slice(j-1)))
-
-                    // console.log(TrainsArr1.concat(TrainsArr.slice(i)));
-
-                    
-
-                    
-
-
-                  // console.log(Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)+1);
-                  // console.log(Trains[Math.floor((xy.y-5)/52)][Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)]);
                 }else{
-                  delete TrainsArr[way][el[2]-1]
-                  console.log(TrainsArr);
-                  // koordi.target.parentNode.remove()
+                  TrainsArr[way].splice(el[2]-1, 1)
+                  // console.log(TrainsArr);
+                  // console.log('---------------');
+
+                  for (let index = el[2]-1; index < TrainsArr[way].length; index++) {
+                    if (TrainsArr[way][index]) TrainsArr[way][index][2]--
+                    
+                  }
                 SetFlyTrain({
                 train: el,
                 way: way,
@@ -173,11 +177,11 @@ const Main = () => {
                 <img src={"/trains/"+el[1]+"/"+el[6]+"/"+el[3]+"/1.svg"} />
                 
               </div>
-            // </Reorder.Item>
+              :null}
+              </>
             )}
             )
           }</div>
-          // </Reorder.Group>
           :<div><br/></div>}
         </div>
       )}
