@@ -8,6 +8,7 @@ const Main = () => {
     const [RightB, SetRightB] = useState(false)
     const [FlyTrain, SetFlyTrain] = useState(false)
     const [PosTrain, SetPosTrain] = useState([0,0])
+    
 
     const trains = useRef(null)
 
@@ -15,10 +16,25 @@ const Main = () => {
     axios.get("https://evraz-back.vercel.app/api?need=ns")
     .then(e=>SetTrains(e.data))
     window.addEventListener("contextmenu", function(e) { e.preventDefault(); })
-
+    
   }
   ,[])
+  
+  
 
+  const PostTrains = async ()=>{
+    const OldTrains = await axios.get("https://evraz-back.vercel.app/api?need=ns").then(e=>e.data)
+    let journality = []
+    for (let ind = 0; ind < 6; ind++) {
+      
+      if (JSON.stringify(OldTrains[ind])!==JSON.stringify(Trains[ind])) {
+        // console.log(OldTrains[ind] , Trains[ind]);
+        journality.push([ind+1, Trains[ind]])
+      }
+    }
+    console.log(journality);
+    axios.post('https://evraz-back.vercel.app/api?need=ns', JSON.stringify(journality)).then(e=>console.log(e.data))
+  }
   
  
 
@@ -93,31 +109,35 @@ const Main = () => {
         <div className="item" key={way} onDoubleClick={
 
           (koordi)=>{
- 
-                  console.log(koordi)
-                  }
- 
-                //   if (FlyTrain) {
- 
-                //   const xy = {x: koordi.clientX, y: koordi.clientY}
-                //   let TrainsArr = Array.from(Trains)
-                //     let TrainArr = Array.from(Trains[Math.floor((xy.y-5)/52)])
-                //     const j = Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)
-                //     console.log(j);
-                //     // const i = Math.floor((xy.y-5)/52)
-                //     SetFlyTrain({...FlyTrain, train: [...FlyTrain.train, FlyTrain.train[2]=j+1]})
-                //     TrainArr.splice(j, 0, FlyTrain.train)
+            if (FlyTrain) {
+              const xy = {x: koordi.clientX, y: koordi.clientY}
+                  let TrainsArr = Array.from(Trains)
+            let TrainArr = Array.from(Trains[Math.floor((xy.y-5)/52)])
+            let j = Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)
+            const i = Math.floor((xy.y-5)/52)
+            // console.log(j ,TrainArr[4], TrainArr);
 
-                //     console.log(TrainArr);
-                //     // console.log(Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)+1);
- 
- 
-                //     TrainsArr.splice(Math.floor((xy.y-5)/52), 1, TrainArr)
-                //     SetFlyTrain(false)
-                //     SetTrains(TrainsArr)
- 
-                //   }
-                // }
+            if (TrainArr[TrainArr.length-1]) {
+              let LastTrain = Number(TrainArr[TrainArr.length-1][2])
+              if (LastTrain+1<j) {
+                // console.log(LastTrain);
+                j = LastTrain+1
+              }
+            }else{
+              j = 1
+            }
+            
+            SetFlyTrain({...FlyTrain, train: [...FlyTrain.train, FlyTrain.train[2]=j]})
+
+            TrainArr.splice(j, 0, FlyTrain.train)
+             for (let index = j; index < TrainArr.length; index++) {
+             if (TrainArr[index]) TrainArr[index][2]++
+           }
+
+            TrainsArr.splice(i, 1, TrainArr)
+            SetFlyTrain(false)
+            SetTrains(TrainsArr)
+                  }}
               }>
           
 
@@ -126,33 +146,22 @@ const Main = () => {
             
             {
             e.map(
-              el=>{
+              (el, id)=>{
                 
                 return(
-                  <>
-              {el?<div className="train" key={el[2]}  onDoubleClick={
+                  <span key={id}>
+              {el?<div className="train" onDoubleClick={
                 (koordi)=>
                 {
-                  const xy = {x: koordi.clientX, y: koordi.clientY}
+                  
+                  if (!FlyTrain) {
+                    const xy = {x: koordi.clientX, y: koordi.clientY}
                   let TrainsArr = Array.from(Trains)
-                  if (FlyTrain) {
-                    let TrainArr = Array.from(Trains[Math.floor((xy.y-5)/52)])
-                    const j = Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)
-                    const i = Math.floor((xy.y-5)/52)
-                    SetFlyTrain({...FlyTrain, train: [...FlyTrain.train, FlyTrain.train[2]=j]})
-                    console.log(FlyTrain.train, 'kl');
-                    TrainArr.splice(j, 0, FlyTrain.train)
-                     for (let index = j; index < TrainArr.length; index++) {
-                     if (TrainArr[index]) TrainArr[index][2]++
-                   }
-
-                    TrainsArr.splice(i, 1, TrainArr)
-                    SetFlyTrain(false)
                     
 
                     
 
-                }else{
+                // }else{
                   TrainsArr[way].splice(el[2]-1, 1)
                   // console.log(TrainsArr);
                   // console.log('---------------');
@@ -168,8 +177,9 @@ const Main = () => {
                 img: "/trains/"+el[1]+"/"+el[6]+"/"+el[3]+"/1.svg", 
                 })
                 SetPosTrain([xy.x, xy.y])
+                SetTrains(TrainsArr)
               }
-              SetTrains(TrainsArr)
+              
               }
               } 
                 onContextMenu={(e)=>SetRightB([el,e.clientX, e.clientY])}>
@@ -178,7 +188,7 @@ const Main = () => {
                 
               </div>
               :null}
-              </>
+              </span>
             )}
             )
           }</div>
@@ -195,6 +205,9 @@ const Main = () => {
           <div className="item">5</div>
           <div className="item">6</div>
         </div>
+      </div>
+      <div onClick={PostTrains} className="posttrain">
+        Click
       </div>
     </div>
   );
