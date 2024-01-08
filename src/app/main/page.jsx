@@ -311,7 +311,7 @@ const Main = () => {
         </div>
       </div>
       {/* <div onClick={PostTrains} className="posttrain"> */}
-      <div onClick={()=>console.log(PosTrain, table)} className="posttrain">
+      <div onClick={PostTrains} className="posttrain">
 
         Click
       </div>
