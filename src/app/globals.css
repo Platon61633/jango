@@ -9,8 +9,8 @@
   align-items: center;
   margin: 10px 0;
   height: 42px;
-  background-color: aqua;
   list-style-type: none;
+  border: 1px solid #D5D5D9;
 }
 
 .table .columns:nth-child(5){
@@ -113,3 +113,280 @@
   font-weight: 700;
   color: rgb(145, 0, 0);
 }
+
+
+
+/* --------------------------------------------------- */
+
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+* {
+  overflow-x: hidden; 
+  margin: 0;
+  padding: 0;
+}
+
+@font-face {
+  font-family: 'FG';
+  src: url('../../public/fonts/FranklinGothic.ttf');
+  font-display: swap;
+}
+
+/* @font-face{
+font-family: 'GT';
+src: url('../public/fonts/gt_reg.otf');
+font-display: swap;
+} */
+
+.main{
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  padding: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: rgba(0, 0, 0, 0.20);
+}
+
+form{
+  display: flex;
+  padding: 30px;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  /* font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; */
+  border-radius: 4px;
+  background-color: white;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.10);
+}
+
+.logo{
+  display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+gap: 16px;
+align-self: stretch;
+}
+
+
+
+.title{
+  display: flex;
+  gap: 16px;
+  color: #2F2E34;
+  font-size: 18px;
+  font-style: normal;
+  /* font-weight: 400; */
+  line-height: 120%;
+}
+
+.title p{
+   padding: 12px 16px;
+}
+
+.auth{
+  font-size: 24px;
+}
+.sep{
+  height: 2px;
+  background-color: #E8E6ED;
+  width: 100%;
+}
+
+.inputs select{
+  border-radius: 4px;
+  font-size: 14px;
+  padding: 17px 110px 17px 10px;
+}
+
+.inputs p{
+  color: #808080;
+}
+
+.inputs input{
+  width: 100%;
+  border-radius: 4px;
+  padding: 17px 110px 17px 18px;
+}
+
+.glaz{
+  position: absolute;
+  transform: translate(-30px, 15px);
+}
+
+form .submit{
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+  background-color: #FF9337;
+  width: 100%;
+  text-align: center;
+  color: white;
+}
+
+
+
+
+
+
+
+/* -------------------------------- */
+
+.basic{
+padding: 20px;
+font-family: 'Franklin Gothic', 'Arial Narrow', Arial, sans-serif;
+}
+
+.first-line{
+display: flex;
+gap: 20px;
+}
+
+.first-line p:nth-child(3){
+color: #868686;
+}
+
+.first-line p:nth-child(2){
+padding-right: 10px;
+}
+
+.second-line{
+padding: 16px 0;
+display: flex;
+justify-content: space-between;
+font-family: 'GT';
+
+}
+
+.second-l{
+display: flex;
+gap: 20px;
+}
+
+/* .stations{
+display: flex;
+padding: 0px 16px;
+align-items: center;
+gap: 16px;
+border: 2px solid #808080;
+border-radius: 4px;
+} */
+
+.slotOfSecondL{
+display: flex;
+align-items: center;
+}
+
+.second-r{
+display: flex;
+gap: 10px;
+}
+
+.sep-v{
+width: 2px;
+height: 100%;
+background-color: #808080;
+}
+
+.vagon{
+display: flex;
+align-items: center;
+gap: 3px;
+}
+
+.filter{
+display: flex;
+}
+
+.filter div{
+position: absolute;
+transform: translate(15px, -4px);
+font-size: 12px;
+text-align: center;
+width: 17px;
+border-radius: 50rem;
+background-color: #EF7812;
+color: white;
+border: 2px solid white;
+}
+
+.third-line{
+display: flex;
+justify-content: space-between;
+/* font-weight: 100; */
+}
+
+.third-l{
+display: flex;
+gap: 16px;
+align-items: center;
+}
+.third-r{
+display: flex;
+gap: 15px;
+}
+
+.third-r div{
+position: absolute;
+transform: translate(170px, -4px);
+font-size: 12px;
+text-align: center;
+width: 17px;
+border-radius: 50rem;
+background-color: #EF7812;
+color: white;
+/* border: 2px solid white; */
+}
+
+.third-r p{
+background-color: #15386C;
+color: white;
+padding: 12px 16px;
+}
+
+.fourth-line{
+display: flex;
+justify-content: end;
+align-items: center;
+padding: 10px;
+/* font-family: 'GT'; */
+}
+
+.item-fl{
+display: flex;
+align-items: center;
+gap: 2px;
+margin: 0 7px;
+}
+
+.fifth-line div{
+gap: 5px;
+display: flex;
+justify-content: end;
+align-items: center;
+}
+
+.fifth-line input{
+padding: 5px;
+}
+
+.fifth-line{
+display: flex;
+justify-content: center;
+gap: 15px;
+/* font-family: 'GT'; */
+}
+
+.quadro{
+width: 24px;
+height: 24px;
+}
+
+
+
