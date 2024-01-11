@@ -1,3 +1,27 @@
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+:root{
+  /* color: ; */
+  --ATL: #FFB762;
+  --FGK: #FFF3B4;
+  --GK: #C8F4C1;
+  --MEC: #ACCDFF;
+  --MOD: #C5AAFF;
+  --NPK: #FDF0EF;
+  --NTS: #BCF3FF;
+  --KONTRAGENT: #72BE7E;
+  --OTHER: #fff;
+  --PGK: #FFBEFC;
+  --RGD: #ABABAB;
+}
+
 .table{
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -10,11 +34,15 @@
   margin: 10px 0;
   height: 42px;
   list-style-type: none;
+  
+}
+
+.mec{
   border: 1px solid #D5D5D9;
 }
 
 .table .columns:nth-child(5){
-  width: min-content(80vw);
+  min-width: 70vw;
 }
 
 .table .item:has(.trains){
@@ -32,14 +60,19 @@
 .train{
   display: flex;
   flex-direction: column;
+  font-size: 9px;
+  font-weight: 700;
 }
 
-.train span{
+.train .num{
   position: absolute;
-  font-size: 9px;
-  transform: translate(18px, 5px);
-  font-weight: 700;
+  transform: translate(18px, 6px);
   color: rgb(145, 0, 0);
+}
+
+.train .pos{
+  position: absolute;
+  transform: translate(4px, 9px);
 }
 
 .train img{
@@ -50,13 +83,14 @@
               user-select: none; 
 }
 
-.nothing{
+/* .nothing{
   display: none;
-}
+} */
 
 .table .info{
   grid-row-start: 1;
   grid-row-end: 2;
+  justify-self: center;
 }
 
 .table .info span{
@@ -68,7 +102,7 @@
   width: 30px;
   align-items: center;
   justify-content: center;
-  height: 230px;
+  height: 312px;
 }
 
 .RightB{
@@ -119,15 +153,7 @@
 /* --------------------------------------------------- */
 
 
-*, *:before, *:after {
-  box-sizing: border-box;
-}
 
-* {
-  overflow-x: hidden; 
-  margin: 0;
-  padding: 0;
-}
 
 @font-face {
   font-family: 'FG';

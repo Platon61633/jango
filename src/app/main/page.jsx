@@ -1,5 +1,6 @@
 "use client";
 import axios from "axios";
+import { document } from "postcss";
 import { useEffect, useRef, useState } from "react";
 
 
@@ -8,16 +9,44 @@ const Main = () => {
     const [RightB, SetRightB] = useState(false)
     const [FlyTrain, SetFlyTrain] = useState(false)
     const [PosTrain, SetPosTrain] = useState([0,0])
-    const [Y, SetY] = useState()
-    const table = useRef()
-    
+    const [NumberTrain, SetNumberTrain] = useState(true)
+    const [ColorSob, SetColorSob] = useState([])
 
+
+    const table = useRef()
     const trains = useRef(null)
 
-  useEffect(()=>{
-    axios.get("https://evraz-back.vercel.app/api?need=ns")
-    .then(e=>SetTrains(e.data))
+  useEffect(()=> {
+    const _FA = async ()=> {
+      await axios.get("https://evraz-back.vercel.app/api?need=ns")
+      .then(e=>{
+        const arr = e.data
+        let ColorSobArr = []
+        for (let ii = 0; ii < arr.length; ii++) {
+          for (let i = 0; i < arr[ii].length; i++) {
+            if (!Boolean(ColorSobArr[0] || i || ii)) {
+              ColorSobArr.push({sob: arr[0][0][1], n: 1})
+            }else{
+              let f = true
+            for (let j = 0; j < ColorSobArr.length; j++) {
+              if (arr[ii][i][1]==ColorSobArr[j].sob) {
+                ColorSobArr[j].n++
+                f = false
+                break
+              }
+              }
+              if (f) ColorSobArr.push({sob: arr[ii][i][1], n: 1})
+          }
+        }
+        }
+
+        SetColorSob(ColorSobArr)
+        SetTrains(e.data)})
+    }
+    _FA()
     window.addEventListener("contextmenu", function(e) { e.preventDefault(); })
+    
+    
     
   }
   ,[])
@@ -32,6 +61,7 @@ const Main = () => {
       if (JSON.stringify(OldTrains[ind])!==JSON.stringify(Trains[ind])) {
         // console.log(OldTrains[ind] , Trains[ind]);
         journality.push([ind+1, Trains[ind]])
+        console.log([ind+1, Trains[ind]]);
       }
     }
     if (journality[0]) {
@@ -48,7 +78,23 @@ const Main = () => {
 
 
 
-      
+      {RightB?
+        <div className="RightB" onClick={()=>SetRightB(false)}>
+          <p onClick={e=>e.stopPropagation()} style={{top: RightB[2], left: RightB[1]}}>
+            
+            <h1>Вагон №{RightB[0][0]}</h1>
+            <hr />
+            <div className="infor">
+              <div><span>Простой на станции</span><span>{RightB[0][8]}</span></div>
+              <div><span>Собственник</span><span>{RightB[0][1]}</span></div>
+              <div><span>Оператор</span><span>???</span></div>
+              <div><span>Тип вагона</span><span>{RightB[0][4]}</span></div>
+              <div><span>Гружённый</span><span>{RightB[0][6]=="POROZHNIE"?<span>Нет</span>:<span>Да</span>}</span></div>
+              <div><span>Позиция</span><span>{RightB[0][2]}</span></div>
+            </div>
+          </p>
+        </div>
+        :<></>}
         <div className='basic'>
           <div className='first-line'>
             <img src='/img/rgd.svg'/>
@@ -93,11 +139,18 @@ const Main = () => {
              <div className='third-line'>
                    <div className='third-l'>
                      <div>
-                       <input id='FreeWay' onChange={e=>console.log(e.target.value)} type="checkbox"/>
+                       <input id='FreeWay' onChange={e=>console.log(e.target.value)} type="checkbox" />
                        <label htmlFor="FreeWay">Скрыть свободные пути</label>
                      </div>
                      <div>
-                       <input id='Number' type="checkbox"/>
+                      
+                       <input
+                       id='Number'
+                       value={true}
+                       name="Number"
+                       onChange={e=>NumberTrain?SetNumberTrain(false):SetNumberTrain(true)}
+                       type="checkbox" checked={NumberTrain}/>
+
                        <label htmlFor="Number">Номер вагона</label>
                      </div>
                    </div>
@@ -111,27 +164,14 @@ const Main = () => {
 
                <div className='fourth-line'>
                  <span>Собственники:</span>
-                 <div className='item-fl'>
-                   <div className='quadro' style={{backgroundColor: '#BCF3FF'}}></div>
-                   <p>НТС(10)</p>
-                 </div>
-                 <div className='item-fl'>
-                   <div className='quadro' style={{backgroundColor: '#BCF3FF'}}></div>
-                   <p>НТС(10)</p>
-                 </div>
-                 <div className='item-fl'>
-                   <div className='quadro' style={{backgroundColor: '#BCF3FF'}}></div>
-                   <p>НТС(10)</p>
-                 </div>
-                 <div className='item-fl'>
-                   <div className='quadro' style={{backgroundColor: '#BCF3FF'}}></div>
-                   <p>НТС(10)</p>
-                 </div>
-                 <div className='item-fl'>
-                   <div className='quadro' style={{backgroundColor: '#BCF3FF'}}></div>
-                   <p>НТС(10)</p>
-                 </div>
-                
+
+                {ColorSob.map((e, id)=>
+                  <div key={id} className="item-fl">
+                    <div className="quadro" style={{backgroundColor: 'var(--'+e.sob+')'}}></div>
+                    <p>{e.sob}({e.n})</p>
+                  </div>
+                  )}
+    
                </div>
 
                <div className='fifth-line'>
@@ -143,29 +183,14 @@ const Main = () => {
                </div>
 
 
-              {RightB?
-        <div className="RightB" onClick={()=>SetRightB(false)}>
-          <p onClick={e=>e.stopPropagation()} style={{top: RightB[2]-24, left: RightB[1]-8}}>
-            
-            <h1>Вагон №{RightB[0][0]}</h1>
-            <hr />
-            <div className="infor">
-              <div><span>Простой на станции</span><span>{RightB[0][8]}</span></div>
-              <div><span>Собственник</span><span>{RightB[0][1]}</span></div>
-              <div><span>Оператор</span><span>???</span></div>
-              <div><span>Тип вагона</span><span>{RightB[0][4]}</span></div>
-              <div><span>Гружённый</span><span>{RightB[0][6]=="POROZHNIE"?<span>Нет</span>:<span>Да</span>}</span></div>
-              <div><span>Позиция</span><span>{RightB[0][2]}</span></div>
-            </div>
-          </p>
-        </div>
-        :<></>}
+              
       <div className="table" ref={table}>
         <div className="colomuns info">
-          <div className="item">j</div>
+          <div className="item"><img src="/img/info.svg" alt="" /></div>
           <span>Парк &quot;П&quot;</span>
         </div>
         <div className="colomuns">
+          <div className="item">Путь</div>
           <div className="item">1</div>
           <div className="item">2</div>
           <div className="item">3</div>
@@ -173,26 +198,30 @@ const Main = () => {
           <div className="item">5</div>
           <div className="item">6</div>
         </div>
+
         <div className="colomuns">
-          <div className="item">4</div>
-          <div className="item">5</div>
-          <div className="item">6</div>
-          <div className="item">4</div>
-          <div className="item">5</div>
-          <div className="item">6</div>
+          <div className="item">Всего</div>
+          {Trains.map((e, id)=>
+            <div key={id} className="item">
+              {e.length}
+            </div>
+            )}
         </div>
+
         <div className="colomuns">
-          <div className="item">1</div>
-          <div className="item">2</div>
-          <div className="item">3</div>
-          <div className="item">1</div>
-          <div className="item">2</div>
-          <div className="item">3</div>
+          <div className="item">Л (Чётная)</div>
+          <div className="item mec">1</div>
+          <div className="item mec">2</div>
+          <div className="item mec">3</div>
+          <div className="item mec">1</div>
+          <div className="item mec">2</div>
+          <div className="item mec">3</div>
         </div>
       <div className="columns" onMouseMove={e=>
       { if (FlyTrain) SetPosTrain([e.clientX, e.clientY])}}
       style={FlyTrain?{cursor: "grab"}:{}}
       >
+      <div className="item"></div>
 
 
       {FlyTrain?
@@ -207,24 +236,21 @@ const Main = () => {
             
       {Trains.map(
         (e, way)=>
-        <div className="item" key={way} onDoubleClick={
+        <div className="item mec" key={way} onDoubleClick={
 
           (koordi)=>{
             if (FlyTrain) {
               
               const xy = {x: koordi.clientX, y: koordi.clientY}
-              const i = Math.floor((xy.y-table.current.offsetTop-5)/52)
+              const i = Math.floor((xy.y-table.current.offsetTop-5)/52)-1
             
                   let TrainsArr = Array.from(Trains)
             let TrainArr = Array.from(Trains[i])
             let j = Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)
-            // const i = Math.floor((xy.y-5)/52)
-            // console.log(j ,TrainArr[4], TrainArr);
 
             if (TrainArr[TrainArr.length-1]) {
               let LastTrain = Number(TrainArr[TrainArr.length-1][2])
               if (LastTrain+1<j) {
-                // console.log(LastTrain);
                 j = LastTrain+1
               }
             }else{
@@ -260,15 +286,12 @@ const Main = () => {
                   
                   if (!FlyTrain) {
                     const xy = {x: koordi.clientX, y: koordi.clientY}
-                  let TrainsArr = Array.from(Trains)
-                  SetY({n: xy.y, telo: koordi})
+                    let TrainsArr = Array.from(Trains)
 
                     
 
                 // }else{
                   TrainsArr[way].splice(el[2]-1, 1)
-                  // console.log(TrainsArr);
-                  // console.log('---------------');
 
                   for (let index = el[2]-1; index < TrainsArr[way].length; index++) {
                     if (TrainsArr[way][index]) TrainsArr[way][index][2]--
@@ -287,7 +310,8 @@ const Main = () => {
               }
               } 
                 onContextMenu={(e)=>SetRightB([el,e.clientX, e.clientY])}>
-                <span>{el[0]}</span>
+                <span className="num" style={NumberTrain?{}:{visibility: 'hidden'}}>{el[0]}</span>
+                <span className="pos" >{el[2]}</span>
                 <img src={"/img/trains/"+el[1]+"/"+el[6]+"/"+el[3]+"/1.svg"} />
                 
               </div>
@@ -302,17 +326,17 @@ const Main = () => {
       </div>
 
         <div className="colomuns">
-          <div className="item">4</div>
-          <div className="item">5</div>
-          <div className="item">6</div>
-          <div className="item">4</div>
-          <div className="item">5</div>
-          <div className="item">6</div>
+          <div className="item">Л (Нечётная)</div>
+          <div className="item mec">4</div>
+          <div className="item mec">5</div>
+          <div className="item mec">6</div>
+          <div className="item mec">4</div>
+          <div className="item mec">5</div>
+          <div className="item mec">6</div>
         </div>
       </div>
       {/* <div onClick={PostTrains} className="posttrain"> */}
       <div onClick={PostTrains} className="posttrain">
-
         Click
       </div>
               
