@@ -11,6 +11,8 @@ const Main = () => {
     const [PosTrain, SetPosTrain] = useState([0,0])
     const [NumberTrain, SetNumberTrain] = useState(true)
     const [ColorSob, SetColorSob] = useState([])
+    const [FreeWay , SetFreeWay] = useState(false);
+    
 
 
     const table = useRef()
@@ -60,10 +62,18 @@ const Main = () => {
       
       if (JSON.stringify(OldTrains[ind])!==JSON.stringify(Trains[ind])) {
         // console.log(OldTrains[ind] , Trains[ind]);
-        journality.push([ind+1, Trains[ind]])
-        console.log([ind+1, Trains[ind]]);
+        if (Trains[ind].length) {
+          journality.push([ind+1, Trains[ind]])
+        }else{
+          journality.push([ind+1, 0])
+          console.log(0)
+        }
+        
+        
       }
     }
+
+    console.log(journality);
     if (journality[0]) {
       axios.post('https://evraz-back.vercel.app/api?need=ns', JSON.stringify(journality)).then(e=>console.log(e.data)).catch(er=>console.log(er))
     }
@@ -139,7 +149,12 @@ const Main = () => {
              <div className='third-line'>
                    <div className='third-l'>
                      <div>
-                       <input id='FreeWay' onChange={e=>console.log(e.target.value)} type="checkbox" />
+                       <input 
+                       id='FreeWay'
+                       value={true}
+                       onChange={e=>FreeWay?SetFreeWay(false):SetFreeWay(true)}
+                       checked={FreeWay}
+                       type="checkbox" />
                        <label htmlFor="FreeWay">Скрыть свободные пути</label>
                      </div>
                      <div>
@@ -147,7 +162,6 @@ const Main = () => {
                        <input
                        id='Number'
                        value={true}
-                       name="Number"
                        onChange={e=>NumberTrain?SetNumberTrain(false):SetNumberTrain(true)}
                        type="checkbox" checked={NumberTrain}/>
 
@@ -320,7 +334,7 @@ const Main = () => {
             )}
             )
           }</div>
-          :<div><br/></div>}
+          :<div></div>}
         </div>
       )}
       </div>
