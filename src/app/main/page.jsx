@@ -11,8 +11,6 @@ const Main = () => {
     const [PosTrain, SetPosTrain] = useState([0,0])
     const [NumberTrain, SetNumberTrain] = useState(true)
     const [ColorSob, SetColorSob] = useState([])
-    const [FreeWay , SetFreeWay] = useState(true);
-    
 
 
     const table = useRef()
@@ -149,12 +147,7 @@ const Main = () => {
              <div className='third-line'>
                    <div className='third-l'>
                      <div>
-                       <input 
-                       id='FreeWay'
-                       value={true}
-                       onChange={e=>FreeWay?SetFreeWay(false):SetFreeWay(true)}
-                       checked={FreeWay}
-                       type="checkbox" />
+                       <input id='FreeWay' onChange={e=>console.log(e.target.value)} type="checkbox" />
                        <label htmlFor="FreeWay">Скрыть свободные пути</label>
                      </div>
                      <div>
@@ -162,6 +155,7 @@ const Main = () => {
                        <input
                        id='Number'
                        value={true}
+                       name="Number"
                        onChange={e=>NumberTrain?SetNumberTrain(false):SetNumberTrain(true)}
                        type="checkbox" checked={NumberTrain}/>
 
@@ -334,11 +328,7 @@ const Main = () => {
             )}
             )
           }</div>
-          :
-          <p>
-          {FreeWay?<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro sequi iste tempore cum, provident quaerat? Itaque dolorem laudantium debitis pariatur, cumque architecto minus, ex exercitationem, et qui provident vitae possimus.</div>:null}
-          </p>
-          }
+          :<div></div>}
         </div>
       )}
       </div>
