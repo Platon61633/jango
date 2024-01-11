@@ -11,7 +11,7 @@ const Main = () => {
     const [PosTrain, SetPosTrain] = useState([0,0])
     const [NumberTrain, SetNumberTrain] = useState(true)
     const [ColorSob, SetColorSob] = useState([])
-    const [FreeWay , SetFreeWay] = useState(false);
+    const [FreeWay , SetFreeWay] = useState(true);
     
 
 
@@ -334,7 +334,11 @@ const Main = () => {
             )}
             )
           }</div>
-          :<div></div>}
+          :
+          <p>
+          {FreeWay?<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro sequi iste tempore cum, provident quaerat? Itaque dolorem laudantium debitis pariatur, cumque architecto minus, ex exercitationem, et qui provident vitae possimus.</div>:null}
+          </p>
+          }
         </div>
       )}
       </div>
