@@ -11,6 +11,8 @@ const Main = () => {
     const [PosTrain, SetPosTrain] = useState([0,0])
     const [NumberTrain, SetNumberTrain] = useState(true)
     const [ColorSob, SetColorSob] = useState([])
+    const [SortSob , SetSortSob] = useState(false);
+    
 
 
     const table = useRef()
@@ -64,7 +66,6 @@ const Main = () => {
           journality.push([ind+1, Trains[ind]])
         }else{
           journality.push([ind+1, 0])
-          console.log(0)
         }
         
         
@@ -99,6 +100,7 @@ const Main = () => {
               <div><span>Тип вагона</span><span>{RightB[0][4]}</span></div>
               <div><span>Гружённый</span><span>{RightB[0][6]=="POROZHNIE"?<span>Нет</span>:<span>Да</span>}</span></div>
               <div><span>Позиция</span><span>{RightB[0][2]}</span></div>
+              <div>{RightB[0][5]}</div>
             </div>
           </p>
         </div>
@@ -124,11 +126,13 @@ const Main = () => {
               </div>
 
              <div className="second-r">
-               <select>
-                   <option value='Собственник'>Собственник</option>
-                   <option value='Собственник'>Собственник</option>
-                   <option value='Собственник'>Собственник</option>
-                   <option value='Собственник'>Собственник</option>
+               <select onChange={e=>{SetSortSob(e.target.value=='0'?false:e.target.value)
+               console.log(e.target.value=='0'?e.target.value:false) }}>
+                   <option value={0}>Собственник</option>
+                   
+                    {ColorSob.map((e, id)=>
+                    <option key={id} value={e.sob}>{e.sob}</option>
+                    )}
                </select>
                <div className="sep-v"></div>
                <span className='filter'>
@@ -244,6 +248,12 @@ const Main = () => {
             
       {Trains.map(
         (e, way)=>
+
+        {
+          // console.log('start');
+          // console.log(e);
+          // console.log(e.filter(ele=>ele[1]=='OTHER'), '-------');
+          return(
         <div className="item mec" key={way} onDoubleClick={
 
           (koordi)=>{
@@ -284,15 +294,20 @@ const Main = () => {
             
             {
             e.map(
+              
               (el, id)=>{
-                
+                // console.log('start');
+                // console.log(el);
+                // console.log(e.filter(ele=>ele[1]=='OTHER'), '-------');
+                // console.log(el && (SortSob==el[1] || !SortSob));
                 return(
                   <span key={id}>
-              {el?<div className="train" onDoubleClick={
+              {el && (SortSob==el[1] || !SortSob)  ?<div className="train" onDoubleClick={
                 (koordi)=>
+                
                 {
-                  
-                  if (!FlyTrain) {
+                  console.log(false)
+                  if (!FlyTrain && !SortSob) {
                     const xy = {x: koordi.clientX, y: koordi.clientY}
                     let TrainsArr = Array.from(Trains)
 
@@ -330,7 +345,7 @@ const Main = () => {
           }</div>
           :<div></div>}
         </div>
-      )}
+      )})}
       </div>
 
         <div className="colomuns">
