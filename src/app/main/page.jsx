@@ -11,7 +11,9 @@ const Main = () => {
     const [PosTrain, SetPosTrain] = useState([0,0])
     const [NumberTrain, SetNumberTrain] = useState(true)
     const [ColorSob, SetColorSob] = useState([])
-    const [SortSob , SetSortSob] = useState(false);
+    const [TypeOfSort , SetTypeOfSort] = useState();
+    
+    // const [SortSob , SetSortSob] = useState(false);
     
 
 
@@ -130,9 +132,9 @@ const Main = () => {
                console.log(e.target.value=='0'?e.target.value:false) }}>
                    <option value={0}>Собственник</option>
                    
-                    {ColorSob.map((e, id)=>
+                    {/* {ColorSob.map((e, id)=>
                     <option key={id} value={e.sob}>{e.sob}</option>
-                    )}
+                    )} */}
                </select>
                <div className="sep-v"></div>
                <span className='filter'>
@@ -302,12 +304,17 @@ const Main = () => {
                 // console.log(el && (SortSob==el[1] || !SortSob));
                 return(
                   <span key={id}>
-              {el && (SortSob==el[1] || !SortSob)  ?<div className="train" onDoubleClick={
+              {/* {el && (SortSob==el[1] || !SortSob)  ?<div className="train" onDoubleClick={  */} {/* фильтр по соб */}
+
+              {el  ?<div className="train" onDoubleClick={
+
                 (koordi)=>
                 
                 {
                   console.log(false)
-                  if (!FlyTrain && !SortSob) {
+                  // if (!FlyTrain && !SortSob) { /* фильтр по соб */}
+                  if (!FlyTrain) {
+
                     const xy = {x: koordi.clientX, y: koordi.clientY}
                     let TrainsArr = Array.from(Trains)
 
