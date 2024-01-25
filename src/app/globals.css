@@ -114,13 +114,27 @@
 
 .RightB p{
   position: absolute;
-  background-color: #EF7812;
+  background-color: #5D636D;
   width: 233px;
   font-size: 13px;
+  padding: 11px 5px;
+  border-radius: 10px;
 }
+.RightB p::before{
+  position: absolute;
+  content: '';
+  background-color: inherit;
+  width: 10%;
+  height: 10%;
+  left: 0;
+  top: 0;
+
+}
+
 
 .RightB h1{
   font-size: 16px;
+  text-align: center;
 }
 
 .RightB .infor{
@@ -131,6 +145,16 @@
 .RightB .infor div{
   display: flex;
   justify-content: space-between;
+}
+
+.RightB .infor div:nth-child(7){
+  justify-content: center;
+}
+.RightB .infor div:nth-child(7) span{
+  background-color: rgb(203, 203, 203);
+  border: 2px solid red;
+  margin-top: 4px;
+  padding: 2px;
 }
 
 .FlyTrain{

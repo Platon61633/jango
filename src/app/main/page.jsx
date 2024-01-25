@@ -11,7 +11,10 @@ const Main = () => {
     const [PosTrain, SetPosTrain] = useState([0,0])
     const [NumberTrain, SetNumberTrain] = useState(true)
     const [ColorSob, SetColorSob] = useState([])
-    const [TypeOfSort , SetTypeOfSort] = useState();
+    const [ManyInfo, SetManyInfo] = useState({})
+    const [TypeOfSort , SetTypeOfSort] = useState('S');
+    const [Loco , SetLoco] = useState({CH: [], NotCH: []});
+    
     
     // const [SortSob , SetSortSob] = useState(false);
     
@@ -24,7 +27,7 @@ const Main = () => {
     const _FA = async ()=> {
       await axios.get("https://evraz-back.vercel.app/api?need=ns")
       .then(e=>{
-        const arr = e.data
+        const arr = e.data.trains
         let ColorSobArr = []
         for (let ii = 0; ii < arr.length; ii++) {
           for (let i = 0; i < arr[ii].length; i++) {
@@ -40,12 +43,33 @@ const Main = () => {
               }
               }
               if (f) ColorSobArr.push({sob: arr[ii][i][1], n: 1})
+        
+        
+
           }
         }
         }
+        let Info = {sick: 0, prostoy: 0, grVh: 0, grIs:0, por:0}
+        for (let ii = 0; ii < arr.length; ii++) {
+          for (let i = 0; i < arr.length; i++) {
+            if (arr[ii][i]) {
+              arr[ii][i][5]=='1'?Info.sick++:null
+              arr[ii][i][8]>5?Info.prostoy++:null
+              arr[ii][i][6]=='GRUZHENIEVHOD'?Info.grVh++:null
+              arr[ii][i][6]=='GRUZHENIEISHOD'?Info.grIs++:null
+              arr[ii][i][6]=='POROZHNIE'?Info.por++:null
 
+            }
+          }
+        }
+        
+        SetManyInfo({...Info, ...ManyInfo})
         SetColorSob(ColorSobArr)
-        SetTrains(e.data)})
+        SetTrains(e.data.trains)
+        SetLoco({CH: e.data.CH, NotCH: e.data.NotCH})
+        console.log(e.data.CH);
+      })
+        
     }
     _FA()
     window.addEventListener("contextmenu", function(e) { e.preventDefault(); })
@@ -98,11 +122,11 @@ const Main = () => {
             <div className="infor">
               <div><span>Простой на станции</span><span>{RightB[0][8]}</span></div>
               <div><span>Собственник</span><span>{RightB[0][1]}</span></div>
-              <div><span>Оператор</span><span>???</span></div>
+              <div><span>Оператор</span><span>{RightB[0][9]}</span></div>
               <div><span>Тип вагона</span><span>{RightB[0][4]}</span></div>
               <div><span>Гружённый</span><span>{RightB[0][6]=="POROZHNIE"?<span>Нет</span>:<span>Да</span>}</span></div>
               <div><span>Позиция</span><span>{RightB[0][2]}</span></div>
-              <div>{RightB[0][5]}</div>
+              <div><span>{RightB[0][7]}</span></div>
             </div>
           </p>
         </div>
@@ -128,13 +152,18 @@ const Main = () => {
               </div>
 
              <div className="second-r">
-               <select onChange={e=>{SetSortSob(e.target.value=='0'?false:e.target.value)
+               {/* <select onChange={e=>{SetSortSob(e.target.value=='0'?false:e.target.value)
                console.log(e.target.value=='0'?e.target.value:false) }}>
-                   <option value={0}>Собственник</option>
-                   
-                    {/* {ColorSob.map((e, id)=>
-                    <option key={id} value={e.sob}>{e.sob}</option>
-                    )} */}
+                   <option value={0}>Собственник</option> */}
+                   {/* фильтр по соб */}
+                <select onChange={e=>SetTypeOfSort(e.target.value)}>
+
+                    <option value={"S"}>Собственник</option>
+                    <option value={"O"}>Операции</option>
+                    <option value={"P"}>Простой</option>
+                    <option value={"Z"}>Загруженность</option>
+                    <option value={"B"}>Больные</option>
+
                </select>
                <div className="sep-v"></div>
                <span className='filter'>
@@ -190,10 +219,12 @@ const Main = () => {
 
                <div className='fifth-line'>
                  <input placeholder='поиск по вагону' />
-                  <div><div className='quadro' style={{backgroundColor: 'orange'}}></div>Больные (3)</div> 
-                  <div><img src="/img/shasi.svg" width={55}/> Простой более 5 суток (34)</div> 
-                  <div><img src="/img/gruzhenyeIsh.svg" width={14} /> Груженые исходящие (10)</div> 
-                  <div><img src="/img/square.svg" width={14} alt="" /> Порожние (50)</div> 
+                  <div><div className='quadro' style={{backgroundColor: '#EB5835'}}></div>Больные ({ManyInfo.sick})</div> 
+                  <div><img src="/img/shasi.svg" width={55}/> Простой более 5 суток ({ManyInfo.prostoy})</div> 
+                  <div><img src="/img/gruzhenyeIsh.svg" width={14} /> Груженые исходящие ({ManyInfo.grIs})</div> 
+                  <div><img src="/img/gruzhenyeVh.svg" width={14} /> Груженые входящий ({ManyInfo.grVh})</div> 
+                  <div><img src="/img/gruzhenyeIsh.svg" width={14} /> Груженые исходящие ({ManyInfo.grIs})</div> 
+                  <div><img src="/img/square.svg" width={14} alt="" /> Порожние ({ManyInfo.por})</div> 
                </div>
 
 
@@ -224,12 +255,14 @@ const Main = () => {
 
         <div className="colomuns">
           <div className="item">Л (Чётная)</div>
-          <div className="item mec">1</div>
+          {Loco.CH.map((e, id)=>
+          <div key={id} className="item mec">{e[0][0]}</div>)}
+          {/* <div className="item mec">1</div>
           <div className="item mec">2</div>
           <div className="item mec">3</div>
           <div className="item mec">1</div>
           <div className="item mec">2</div>
-          <div className="item mec">3</div>
+          <div className="item mec">3</div> */}
         </div>
       <div className="columns" onMouseMove={e=>
       { if (FlyTrain) SetPosTrain([e.clientX, e.clientY])}}
@@ -311,7 +344,6 @@ const Main = () => {
                 (koordi)=>
                 
                 {
-                  console.log(false)
                   // if (!FlyTrain && !SortSob) { /* фильтр по соб */}
                   if (!FlyTrain) {
 
@@ -327,6 +359,20 @@ const Main = () => {
                     if (TrainsArr[way][index]) TrainsArr[way][index][2]--
                     
                   }
+                  let img
+                switch (TypeOfSort) {
+                  case 'S':
+                    img = "/img/trains/"+el[1]+"/"+el[6]+"/"+el[3]+"/1.svg";
+                    break;
+                  case 'B':
+                    img = "/img/trains/"+ el[5]?'bolnoy/'+el[1]+'.svg':'OTHER/'+el[6]+"/"+el[3]+"/1.svg"
+                    break;
+                
+                  default:
+                    break;
+                }
+                
+
                 SetFlyTrain({
                 train: el,
                 way: way,
@@ -342,7 +388,37 @@ const Main = () => {
                 onContextMenu={(e)=>SetRightB([el,e.clientX, e.clientY])}>
                 <span className="num" style={NumberTrain?{}:{visibility: 'hidden'}}>{el[0]}</span>
                 <span className="pos" >{el[2]}</span>
-                <img src={"/img/trains/"+el[1]+"/"+el[6]+"/"+el[3]+"/1.svg"} />
+                {TypeOfSort=='S'?<img src={"/img/trains/"+el[1]+"/"+el[6]+"/"+el[3]+"/1.svg"} />:null}
+                {TypeOfSort=='B'? 
+                <div>
+                {Number(el[5])?<img src={"/img/trains/bolnoy/"+el[3]+'.svg'} alt="" />:
+              <img src={"/img/trains/OTHER/"+el[6]+"/"+el[3]+"/1.svg"}/>}
+              </div>
+                :null}
+                {TypeOfSort=='Z'? 
+                <div>
+                {el[6]=='POROZHNIE'?<img src={"/img/trains/ATL/"+el[6]+"/"+el[3]+"/1.svg"} alt="" />:
+              <img src={"/img/trains/OTHER/"+el[6]+"/"+el[3]+"/1.svg"}/>}
+              </div>
+                :null}
+                {TypeOfSort=='P'?
+                <div>
+                  {el[8]<4?<img src={"/img/trains/GK/"+el[6]+"/"+el[3]+"/1.svg"} />:null}
+                  {5<el[8] && 11>el[8]?<img src={"/img/trains/ATL/"+el[6]+"/"+el[3]+"/1.svg"} />:null}
+                  {el[8]>3 && el[8]<6?<img src={"/img/trains/FGK/"+el[6]+"/"+el[3]+"/1.svg"} />:null}
+                  {el[8]>10?<img src={"/img/trains/MOD/"+el[6]+"/"+el[3]+"/1.svg"} />:null}
+                </div>:
+                null}
+                {TypeOfSort=='O'?
+                <div>
+                  {el[7]=='Finished'?<img src={"/img/trains/PGK/"+el[6]+"/"+el[3]+"/1.svg"} />:null}
+                  {el[7]=='InProgress'?<img src={"/img/trains/FGK/"+el[6]+"/"+el[3]+"/1.svg"} />:null}
+                  {el[7]=='WithoutOperation'?<img src={"/img/trains/GK/"+el[6]+"/"+el[3]+"/1.svg"} />:null}
+                  {el[7]=='0'?<img src={"/img/trains/OTHER/"+el[6]+"/"+el[3]+"/1.svg"} />:null}
+                </div>:
+                null}
+
+                
                 
               </div>
               :null}
@@ -366,9 +442,11 @@ const Main = () => {
         </div>
       </div>
       {/* <div onClick={PostTrains} className="posttrain"> */}
-      <div onClick={PostTrains} className="posttrain">
+      <div onClick={e=>console.log(TypeOfSort)} className="posttrain">
         Click
       </div>
+
+      
               
 
            </div>
