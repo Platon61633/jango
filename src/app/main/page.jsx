@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
-import { document } from "postcss";
 import { useEffect, useRef, useState } from "react";
+import Translate from "translate";
 
 
 const Main = () => {
@@ -14,6 +14,12 @@ const Main = () => {
     const [ManyInfo, SetManyInfo] = useState({})
     const [TypeOfSort , SetTypeOfSort] = useState('S');
     const [Loco , SetLoco] = useState({CH: [], NotCH: []});
+    const [InfoForm , SetInfoForm] = useState(false);
+    const [SearchTrain , SetSearchTrain] = useState('');
+    const [FindedTrain , SetFindedTrain] = useState('');
+    
+    
+    
     
     
     // const [SortSob , SetSortSob] = useState(false);
@@ -93,14 +99,37 @@ const Main = () => {
         }else{
           journality.push([ind+1, 0])
         }
-        
-        
       }
     }
 
     console.log(journality);
     if (journality[0]) {
       axios.post('https://evraz-back.vercel.app/api?need=ns', JSON.stringify(journality)).then(e=>console.log(e.data)).catch(er=>console.log(er))
+    }
+  }
+
+  const GetSearchTrain = (e)=>{
+    if (!e) {
+      SetFindedTrain('');
+      console.log('klk');
+    }
+    for (let i = 0; i < Trains.length; i++) {
+      if (Trains[i]) {
+        for (let j = 0; j < Trains[i].length; j++) {
+          // if (e.length<6) {
+            if (Trains[i][j][0].slice(-e.length)==e) {
+              console.log(Trains[i][j]);
+              SetFindedTrain(Trains[i][j][0])
+            }
+          // }
+        //   else{
+        //   if (Trains[i][j][0]===e) {
+        //     console.log(Trains[i][j]);
+        //   }
+        // }
+          
+        }
+      }
     }
   }
   
@@ -110,7 +139,6 @@ const Main = () => {
 
   return (
     <div className="App">   
-
 
 
       {RightB?
@@ -131,6 +159,7 @@ const Main = () => {
           </p>
         </div>
         :<></>}
+        
         <div className='basic'>
           <div className='first-line'>
             <img src='/img/rgd.svg'/>
@@ -218,7 +247,12 @@ const Main = () => {
                </div>
 
                <div className='fifth-line'>
-                 <input placeholder='поиск по вагону' />
+                <div>
+                 <input placeholder='поиск по вагону' value={SearchTrain} onChange={e=>{
+                  SetSearchTrain(e.target.value)
+                  GetSearchTrain(e.target.value)
+                  }}/>
+                </div>
                   <div><div className='quadro' style={{backgroundColor: '#EB5835'}}></div>Больные ({ManyInfo.sick})</div> 
                   <div><img src="/img/shasi.svg" width={55}/> Простой более 5 суток ({ManyInfo.prostoy})</div> 
                   <div><img src="/img/gruzhenyeIsh.svg" width={14} /> Груженые исходящие ({ManyInfo.grIs})</div> 
@@ -231,7 +265,10 @@ const Main = () => {
               
       <div className="table" ref={table}>
         <div className="colomuns info">
-          <div className="item"><img src="/img/info.svg" alt="" /></div>
+          <div className="item" onClick={e=>InfoForm?SetInfoForm(false):SetInfoForm(true)}><img src="/img/info.svg" alt="" /></div>
+          {InfoForm?<div className="infoform">
+          <img src="/img/infoForm.svg" width={250} alt="" />
+        </div>:null}
           <span>Парк &quot;П&quot;</span>
         </div>
         <div className="colomuns">
@@ -256,13 +293,15 @@ const Main = () => {
         <div className="colomuns">
           <div className="item">Л (Чётная)</div>
           {Loco.CH.map((e, id)=>
-          <div key={id} className="item mec">{e[0][0]}</div>)}
-          {/* <div className="item mec">1</div>
-          <div className="item mec">2</div>
-          <div className="item mec">3</div>
-          <div className="item mec">1</div>
-          <div className="item mec">2</div>
-          <div className="item mec">3</div> */}
+          <div key={id} className="item mec ">{e?
+            e.map((el, idl)=>
+            <div className="locomotive" key={idl}>
+              <img src="/img/trainL.svg" alt="" width={26}/>
+              <span>{el[0]}</span>
+            </div>)
+            :null}</div>
+          )
+        }
         </div>
       <div className="columns" onMouseMove={e=>
       { if (FlyTrain) SetPosTrain([e.clientX, e.clientY])}}
@@ -331,20 +370,15 @@ const Main = () => {
             e.map(
               
               (el, id)=>{
-                // console.log('start');
-                // console.log(el);
-                // console.log(e.filter(ele=>ele[1]=='OTHER'), '-------');
-                // console.log(el && (SortSob==el[1] || !SortSob));
+                
                 return(
                   <span key={id}>
-              {/* {el && (SortSob==el[1] || !SortSob)  ?<div className="train" onDoubleClick={  */} {/* фильтр по соб */}
 
               {el  ?<div className="train" onDoubleClick={
 
                 (koordi)=>
                 
                 {
-                  // if (!FlyTrain && !SortSob) { /* фильтр по соб */}
                   if (!FlyTrain) {
 
                     const xy = {x: koordi.clientX, y: koordi.clientY}
@@ -352,7 +386,6 @@ const Main = () => {
 
                     
 
-                // }else{
                   TrainsArr[way].splice(el[2]-1, 1)
 
                   for (let index = el[2]-1; index < TrainsArr[way].length; index++) {
@@ -388,7 +421,9 @@ const Main = () => {
                 onContextMenu={(e)=>SetRightB([el,e.clientX, e.clientY])}>
                 <span className="num" style={NumberTrain?{}:{visibility: 'hidden'}}>{el[0]}</span>
                 <span className="pos" >{el[2]}</span>
-                {TypeOfSort=='S'?<img src={"/img/trains/"+el[1]+"/"+el[6]+"/"+el[3]+"/1.svg"} />:null}
+
+                {FindedTrain==el[0]?<img style={{background: '#cacaca'}} src={"/img/trains/VIDELENNIE/"+el[6]+"/"+el[3]+"/1.svg"}/>:
+                <div>{TypeOfSort=='S'?<img src={"/img/trains/"+el[1]+"/"+el[6]+"/"+el[3]+"/1.svg"} />:null}
                 {TypeOfSort=='B'? 
                 <div>
                 {Number(el[5])?<img src={"/img/trains/bolnoy/"+el[3]+'.svg'} alt="" />:
@@ -416,7 +451,7 @@ const Main = () => {
                   {el[7]=='WithoutOperation'?<img src={"/img/trains/GK/"+el[6]+"/"+el[3]+"/1.svg"} />:null}
                   {el[7]=='0'?<img src={"/img/trains/OTHER/"+el[6]+"/"+el[3]+"/1.svg"} />:null}
                 </div>:
-                null}
+                null}</div>}
 
                 
                 
@@ -431,18 +466,22 @@ const Main = () => {
       )})}
       </div>
 
-        <div className="colomuns">
-          <div className="item">Л (Нечётная)</div>
-          <div className="item mec">4</div>
-          <div className="item mec">5</div>
-          <div className="item mec">6</div>
-          <div className="item mec">4</div>
-          <div className="item mec">5</div>
-          <div className="item mec">6</div>
+      <div className="colomuns">
+          <div className="item">Л (Чётная)</div>
+          {Loco.NotCH.map((e, id)=>
+          <div key={id} className="item mec ">{e?
+            e.map((el, idl)=>
+            <div className="locomotive" key={idl}>
+              <img src="/img/trainL.svg" alt="" width={26}/>
+              <span>{el[0]}</span>
+            </div>)
+            :null}</div>
+          )
+        }
         </div>
       </div>
       {/* <div onClick={PostTrains} className="posttrain"> */}
-      <div onClick={e=>console.log(TypeOfSort)} className="posttrain">
+      <div onClick={e=>Translate("Hello world", "ru").then(er=>console.log(er))} className="posttrain">
         Click
       </div>
 

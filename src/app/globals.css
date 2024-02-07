@@ -7,8 +7,19 @@
   padding: 0;
 }
 
+body::-webkit-scrollbar {
+  width: 12px;               /* ширина scrollbar */
+}
+body::-webkit-scrollbar-track {
+  background: rgb(180, 180, 180);    /* цвет дорожки */
+}
+body::-webkit-scrollbar-thumb {
+  background-color: white;    /* цвет плашки */
+  border-radius: 20px;       /* закругления плашки */
+  border: 3px solid rgb(180, 180, 180);  /*padding вокруг плашки*/
+}
+
 :root{
-  /* color: ; */
   --ATL: #FFB762;
   --FGK: #FFF3B4;
   --GK: #C8F4C1;
@@ -34,6 +45,8 @@
   margin: 10px 0;
   height: 42px;
   list-style-type: none;
+  gap: 5px;
+  padding: 0 5px;
   
 }
 
@@ -194,7 +207,7 @@ font-display: swap;
 .main{
   display: flex;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   padding: 10px;
   flex-direction: column;
   justify-content: center;
@@ -413,10 +426,10 @@ display: flex;
 align-items: center;
 gap: 2px;
 margin: 0 7px;
+/* color: #cacaca; */
 }
 
 .fifth-line div{
-gap: 5px;
 display: flex;
 justify-content: end;
 align-items: center;
@@ -424,6 +437,12 @@ align-items: center;
 
 .fifth-line input{
 padding: 5px;
+}
+
+.fifth-line input+div{
+  background-color: #15386c;
+  color: white;
+  padding: 6px;
 }
 
 .fifth-line{
@@ -438,5 +457,22 @@ width: 24px;
 height: 24px;
 }
 
+.locomotive img{
+  padding-top: 14px;
+}
 
+.locomotive span{
+  position: absolute;
+  font-size: 11px;
+  transform: translate(-26px, 2px);  
+}
+
+.infoform {
+  /* width: 100%;
+  background-color: #dedede;
+  opacity: 0.4; */
+  position: absolute;
+  z-index: 2;
+  background-color: white;
+}
 
