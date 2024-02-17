@@ -1,0 +1,40 @@
+.Operation{
+    padding: 10px;
+}
+
+.Operation .filter{
+    display: flex;
+    gap: 20px;
+    margin: 30px 80px;
+}
+
+.Operation table{
+    border-spacing: 0;
+}
+
+.Operation td, .Operation th{
+    text-align: center; 
+    padding: 10px;
+}
+
+.Operation thead tr{
+    background-color: #E8E6ED;
+}
+
+.Operation tr:nth-child(2n){
+    background-color: #E8E6ED;
+}
+
+.circle{
+    padding: 2px;
+    width: 10px;
+}
+
+/* .Operation th::before{
+    content: '';
+    position: absolute;
+    height: 18px;
+    width: 100%;
+    background-color:aqua;
+    z-index: -1;
+} */

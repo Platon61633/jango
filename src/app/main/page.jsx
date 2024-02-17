@@ -1,7 +1,10 @@
 "use client";
+import '../main.css'
 import axios from "axios";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import Translate from "translate";
+
 
 
 const Main = () => {
@@ -164,7 +167,7 @@ const Main = () => {
           <div className='first-line'>
             <img src='/img/rgd.svg'/>
             <p>АРМ дежурного по станции</p>
-            <p>Журнал операций</p>
+            <Link style={{textDecoration: 'none'}} href='/operation'><p>Журнал операций</p></Link>
           </div>
           <div className="second-line">
 
@@ -181,10 +184,6 @@ const Main = () => {
               </div>
 
              <div className="second-r">
-               {/* <select onChange={e=>{SetSortSob(e.target.value=='0'?false:e.target.value)
-               console.log(e.target.value=='0'?e.target.value:false) }}>
-                   <option value={0}>Собственник</option> */}
-                   {/* фильтр по соб */}
                 <select onChange={e=>SetTypeOfSort(e.target.value)}>
 
                     <option value={"S"}>Собственник</option>
@@ -227,7 +226,7 @@ const Main = () => {
                      </div>
                    </div>
                    <div className="third-r">
-                     <p>Операции на станции</p>
+                     <Link style={{textDecoration: 'none'}} href='/OperationOnStation'><p className='btn'>Операции на станции</p></Link>
                      <div>2</div>
                      <img src={"/img/train.svg"} width={25.1} alt="" />
                      <img src="/img/excel.svg" width={20} alt="" />
@@ -328,7 +327,7 @@ const Main = () => {
           // console.log(e);
           // console.log(e.filter(ele=>ele[1]=='OTHER'), '-------');
           return(
-        <div className="item mec" key={way} onDoubleClick={
+        <div className="item mec" key={way} onMouseUp={
 
           (koordi)=>{
             if (FlyTrain) {
@@ -374,7 +373,7 @@ const Main = () => {
                 return(
                   <span key={id}>
 
-              {el  ?<div className="train" onDoubleClick={
+              {el  ?<div className="train" onMouseDown={
 
                 (koordi)=>
                 
