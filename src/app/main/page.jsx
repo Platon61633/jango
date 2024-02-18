@@ -20,6 +20,7 @@ const Main = () => {
     const [InfoForm , SetInfoForm] = useState(false);
     const [SearchTrain , SetSearchTrain] = useState('');
     const [FindedTrain , SetFindedTrain] = useState('');
+    const [DataSome , SetDataSome] = useState();
     
     
     
@@ -76,7 +77,7 @@ const Main = () => {
         SetColorSob(ColorSobArr)
         SetTrains(e.data.trains)
         SetLoco({CH: e.data.CH, NotCH: e.data.NotCH})
-        console.log(e.data.CH);
+        // console.log(e.data.CH);
       })
         
     }
@@ -105,7 +106,7 @@ const Main = () => {
       }
     }
 
-    console.log(journality);
+    console.log(journality, 'l')
     if (journality[0]) {
       axios.post('https://evraz-back.vercel.app/api?need=ns', JSON.stringify(journality)).then(e=>console.log(e.data)).catch(er=>console.log(er))
     }
@@ -226,7 +227,7 @@ const Main = () => {
                      </div>
                    </div>
                    <div className="third-r">
-                     <Link style={{textDecoration: 'none'}} href='/OperationOnStation'><p className='btn'>Операции на станции</p></Link>
+                     <Link style={{textDecoration: 'none'}} href='/OperationOnStation/7777-8888'><p className='btn'>Операции на станции</p></Link>
                      <div>2</div>
                      <img src={"/img/train.svg"} width={25.1} alt="" />
                      <img src="/img/excel.svg" width={20} alt="" />
@@ -480,7 +481,7 @@ const Main = () => {
         </div>
       </div>
       {/* <div onClick={PostTrains} className="posttrain"> */}
-      <div onClick={e=>Translate("Hello world", "ru").then(er=>console.log(er))} className="posttrain">
+      <div onClick={PostTrains} className="posttrain">
         Click
       </div>
 
@@ -490,6 +491,7 @@ const Main = () => {
            </div>
 
          </div>
+         
      </div>
   );
 };
