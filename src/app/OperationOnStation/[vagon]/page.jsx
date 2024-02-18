@@ -4,13 +4,18 @@ import '../../OperationOnStation.css'
 import axios from 'axios';
 
 
-const OperationOnStation = ({params}) => {
+const OperationOnStation = ({flagFunc, SetMovingTrain, MovingTrain, numberOperation}) => {
+
+
+    const FinishTrain = MovingTrain[numberOperation]
 
     const [NumOp , SetNumOp] = useState('');
     const [Minut , SetMinut] = useState('Загружается...');
     const [CustomOP , SetCustomOP] = useState(false);
     const [StartTime , SetStartTime] = useState(new Date().toLocaleString().slice(6, 10)+'-'+new Date().toLocaleString().slice(3, 5)+'-'+new Date().toLocaleString().slice(0, 2)+'T'+new Date().toLocaleString().slice(12, 17));
     const [FinishTime , SetFinishTime] = useState(new Date().toLocaleString().slice(6, 10)+'-'+new Date().toLocaleString().slice(3, 5)+'-'+new Date().toLocaleString().slice(0, 2)+'T'+new Date().toLocaleString().slice(12, 17));
+    const [StartTrain , SetStartTrain] = useState();
+    
     
 
     const RefType = useRef()
@@ -22,7 +27,6 @@ const OperationOnStation = ({params}) => {
     const RefFinishPark = useRef();
     const RefStartWay = useRef();
     const RefFinishWay = useRef();
-    const RefVagon = useRef();
     const RefNapravlenie = useRef();
     
     const TypeOperation = ['Перестановка вагонов', 'Перестановка вагонов без отцепки локомотива',
@@ -33,6 +37,8 @@ const OperationOnStation = ({params}) => {
     
 
     useEffect(()=>{
+        // axios.get("https://evraz-back.vercel.app/api?need=train&train="+FinishTrain.number)
+        // .then(e=>SetStartTrain(e.data))
         axios.get('https://evraz-back.vercel.app/api?need=operation')
         .then(e=>{
             let max = e.data[0][0]
@@ -46,10 +52,15 @@ const OperationOnStation = ({params}) => {
         SetMinut(Math.floor(Math.random()*(50-30)+30))
         // StartTime.current
     },[])
+    
+    const nextOperation = ()=>{
+        console.log(MovingTrain);
+        SetMovingTrain(MovingTrain.slice(0, numberOperation))
+    }
 
     return(
         <div className='OperationOnStation'>
-            <h2>Регистрация операции</h2>
+            <h2>Регистрация операции {numberOperation+1}</h2>
             <hr />
             {/* <div className='p'>Иполняемая операция: {NumOp}</p> */}
             <div className="info">
@@ -112,7 +123,7 @@ const OperationOnStation = ({params}) => {
                               <select ref={RefFinishStation}>
                                   {['Новкузнецк Северный', 'Новкузнецк Северный',
                                   'Новкузнецк Северный', 'Новкузнецк Северный'].map((e, id)=>
-                                    <option key={id} value={e}>{e}</option>
+                                    <option key={id} value={e} >{e}</option>
                                   )}
                               </select>
                         </div>
@@ -155,7 +166,7 @@ const OperationOnStation = ({params}) => {
                     </div>
                     <div className='p'>
                         <div>
-                              Вагон №{params.vagon}
+                              Вагон №{FinishTrain.number}
                         </div>
                         <div>
                               <div>Направление подачи</div>
@@ -243,7 +254,11 @@ const OperationOnStation = ({params}) => {
             </div>
             <hr />
             <div className='submit'>
-                <div style={{color: '#15386C', fontWeight: 800}}>Отмена</div>
+                <div style={{color: '#15386C', fontWeight: 800, display: 'flex', flexDirection: 'column', gap: 20}}>
+                    <div onClick={()=>nextOperation()}>Отмена</div>
+                    <div onClick={()=>flagFunc(false)}>Отменить всё</div>
+                </div>
+                
                 <div onClick={()=>console.log(
                 {StartTime,
                 FinishTime,
@@ -256,7 +271,9 @@ const OperationOnStation = ({params}) => {
                 StartWay: RefStartWay.current.value,
                 FInishWay: RefFinishWay.current.value,
                 Napravlenie: RefNapravlenie.current.value
-                })} className="btn">Сохранить</div>
+                },
+                FinishTrain,
+                RefStartWay.current.value)} className="btn">Сохранить</div>
             </div>
         </div>
     );

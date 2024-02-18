@@ -1,5 +1,8 @@
 .OperationOnStation{
     padding: 30px;
+    position: absolute;
+    inset: 0;
+    background-color: white;
 }
 
 .OperationOnStation hr{
@@ -58,5 +61,6 @@
 .OperationOnStation .submit{
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 0 30px;
 }

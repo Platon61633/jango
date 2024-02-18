@@ -4,6 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import Translate from "translate";
+import OperationOnStation from '../OperationOnStation/[vagon]/page';
 
 
 
@@ -20,6 +21,12 @@ const Main = () => {
     const [InfoForm , SetInfoForm] = useState(false);
     const [SearchTrain , SetSearchTrain] = useState('');
     const [FindedTrain , SetFindedTrain] = useState('');
+    const [OperationF , SetOperationF] = useState(false);
+    const [MovingTrain , SetMovingTrain] = useState([]);
+    
+    
+
+
     const [DataSome , SetDataSome] = useState();
     
     
@@ -227,8 +234,8 @@ const Main = () => {
                      </div>
                    </div>
                    <div className="third-r">
-                     <Link style={{textDecoration: 'none'}} href='/OperationOnStation/7777-8888'><p className='btn'>Операции на станции</p></Link>
-                     <div>2</div>
+                     <p onClick={()=>SetOperationF(true)} className='btn'>Операции на станции</p>
+                     <div>{MovingTrain.length==0?null:MovingTrain.length}</div>
                      <img src={"/img/train.svg"} width={25.1} alt="" />
                      <img src="/img/excel.svg" width={20} alt="" />
                    </div>
@@ -333,6 +340,24 @@ const Main = () => {
           (koordi)=>{
             if (FlyTrain) {
               
+              // ---------Отслеживание операций----------------
+              // let f = true
+              // for (let i = 0; i < MovingTrain.length; i++) {
+              //   if (FlyTrain.train[0]==MovingTrain[i].number || Fl) {
+              //     let ArrMovingTrain = Array.from(MovingTrain)
+              //     ArrMovingTrain[i] = {number: FlyTrain.train[0], position: FlyTrain.train[2], way: way+1}
+              //     SetMovingTrain(ArrMovingTrain)
+              //     f = false
+              //   }
+              // }
+              // if (f) {
+              //   SetMovingTrain([{
+              //   number: FlyTrain.train[0],
+              //   position: FlyTrain.train[2],
+              //   way: way+1}, ...MovingTrain])
+              // }
+              // ----------------------------------------------------
+
               const xy = {x: koordi.clientX, y: koordi.clientY}
               const i = Math.floor((xy.y-table.current.offsetTop-5)/52)-1
             
@@ -366,8 +391,7 @@ const Main = () => {
           {e?
           <div className="trains" ref={trains}>
             
-            {
-            e.map(
+            {e.map(
               
               (el, id)=>{
                 
@@ -380,6 +404,23 @@ const Main = () => {
                 
                 {
                   if (!FlyTrain) {
+                    
+                    // ---------Отслеживание операций----------------
+                    let f = true
+                    for (let i = 0; i < MovingTrain.length; i++) {
+                      if (FlyTrain.train[0]==MovingTrain[i].number || FlyTrain.train[2]==MovingTrain[i].way) {
+                        let ArrMovingTrain = Array.from(MovingTrain)
+                        ArrMovingTrain[i] = {number: FlyTrain.train[0], way: way+1}
+                        SetMovingTrain(ArrMovingTrain)
+                        f = false
+                      }
+                    }
+                    if (f) {
+                      SetMovingTrain([{
+                      number: FlyTrain.train[0],
+                      way: way+1}, ...MovingTrain])
+                    }
+                    // -------------------------------------------------
 
                     const xy = {x: koordi.clientX, y: koordi.clientY}
                     let TrainsArr = Array.from(Trains)
@@ -481,7 +522,7 @@ const Main = () => {
         </div>
       </div>
       {/* <div onClick={PostTrains} className="posttrain"> */}
-      <div onClick={PostTrains} className="posttrain">
+      <div onClick={()=>console.log(MovingTrain)} className="posttrain">
         Click
       </div>
 
@@ -491,7 +532,10 @@ const Main = () => {
            </div>
 
          </div>
-         
+         {OperationF?MovingTrain.map((e, id)=>
+            <OperationOnStation flagFunc={SetOperationF} SetMovingTrain={SetMovingTrain} MovingTrain={MovingTrain} numberOperation={id}/>
+         )
+         :null}
      </div>
   );
 };
