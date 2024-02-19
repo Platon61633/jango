@@ -7,7 +7,7 @@ import axios from 'axios';
 const OperationOnStation = ({flagFunc, SetMovingTrain, MovingTrain, numberOperation}) => {
 
 
-    const FinishTrain = MovingTrain[numberOperation]
+    const Train = MovingTrain[numberOperation]
 
     const [NumOp , SetNumOp] = useState('');
     const [Minut , SetMinut] = useState('Загружается...');
@@ -55,6 +55,9 @@ const OperationOnStation = ({flagFunc, SetMovingTrain, MovingTrain, numberOperat
     
     const nextOperation = ()=>{
         console.log(MovingTrain);
+        if (numberOperation==0) {
+            flagFunc(false)
+        }
         SetMovingTrain(MovingTrain.slice(0, numberOperation))
     }
 
@@ -152,7 +155,7 @@ const OperationOnStation = ({flagFunc, SetMovingTrain, MovingTrain, numberOperat
                               <select ref={RefStartWay}>
                                 <option>Выберите из списка</option>
                                   {[1, 2, 3, 4, 5, 6].map(e=>
-                                  <option key={e}>{e}</option>)}
+                                  <option key={e} selected={e==Train.wayStart?'selected':null}>{e}</option>)}
                               </select>
                         </div>
                         <div>
@@ -160,13 +163,13 @@ const OperationOnStation = ({flagFunc, SetMovingTrain, MovingTrain, numberOperat
                               <select ref={RefFinishWay}>
                                 <option>Выберите из списка</option>
                                   {[1, 2, 3, 4, 5, 6].map(e=>
-                                  <option key={e}>{e}</option>)}
+                                  <option key={e} selected={e==Train.wayFinish?'selected':null}>{e}</option>)}
                               </select>
                         </div>
                     </div>
                     <div className='p'>
                         <div>
-                              Вагон №{FinishTrain.number}
+                              Вагон №{Train.number}
                         </div>
                         <div>
                               <div>Направление подачи</div>
@@ -272,7 +275,7 @@ const OperationOnStation = ({flagFunc, SetMovingTrain, MovingTrain, numberOperat
                 FInishWay: RefFinishWay.current.value,
                 Napravlenie: RefNapravlenie.current.value
                 },
-                FinishTrain,
+                Train,
                 RefStartWay.current.value)} className="btn">Сохранить</div>
             </div>
         </div>

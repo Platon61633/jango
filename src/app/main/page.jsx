@@ -279,7 +279,7 @@ const Main = () => {
           <span>Парк &quot;П&quot;</span>
         </div>
         <div className="colomuns">
-          <div className="item">Путь</div>
+          <div className="header">Путь</div>
           <div className="item">1</div>
           <div className="item">2</div>
           <div className="item">3</div>
@@ -289,7 +289,7 @@ const Main = () => {
         </div>
 
         <div className="colomuns">
-          <div className="item">Всего</div>
+          <div className="header">Всего</div>
           {Trains.map((e, id)=>
             <div key={id} className="item">
               {e.length}
@@ -298,7 +298,7 @@ const Main = () => {
         </div>
 
         <div className="colomuns">
-          <div className="item">Л (Чётная)</div>
+          <div className="header">Л (Чётная)</div>
           {Loco.CH.map((e, id)=>
           <div key={id} className="item mec ">{e?
             e.map((el, idl)=>
@@ -314,7 +314,7 @@ const Main = () => {
       { if (FlyTrain) SetPosTrain([e.clientX, e.clientY])}}
       style={FlyTrain?{cursor: "grab"}:{}}
       >
-      <div className="item"></div>
+      <div className="header"></div>
 
 
       {FlyTrain?
@@ -339,24 +339,32 @@ const Main = () => {
 
           (koordi)=>{
             if (FlyTrain) {
-              
+
               // ---------Отслеживание операций----------------
-              // let f = true
-              // for (let i = 0; i < MovingTrain.length; i++) {
-              //   if (FlyTrain.train[0]==MovingTrain[i].number || Fl) {
-              //     let ArrMovingTrain = Array.from(MovingTrain)
-              //     ArrMovingTrain[i] = {number: FlyTrain.train[0], position: FlyTrain.train[2], way: way+1}
-              //     SetMovingTrain(ArrMovingTrain)
-              //     f = false
-              //   }
-              // }
-              // if (f) {
-              //   SetMovingTrain([{
-              //   number: FlyTrain.train[0],
-              //   position: FlyTrain.train[2],
-              //   way: way+1}, ...MovingTrain])
-              // }
-              // ----------------------------------------------------
+              let f = true
+              for (let i = 0; i < MovingTrain.length; i++) {
+                if (FlyTrain.train[0]==MovingTrain[i].number) {
+                  if (way!=FlyTrain.way) {
+                    if (MovingTrain[i].wayStart==way) {
+                      SetMovingTrain([...MovingTrain.slice(0, i), ...MovingTrain.slice(i+1)])
+                    }else{
+                    SetMovingTrain([{
+                      number: FlyTrain.train[0],
+                      wayStart: MovingTrain[i].wayStart+1,
+                      wayFinish: way+1},...MovingTrain.slice(0, i), ...MovingTrain.slice(i+1)])
+                    }
+                  } 
+                  f = false
+                  break
+                }
+              }
+              if (f && FlyTrain.way!=way) {
+                SetMovingTrain([{
+                number: FlyTrain.train[0],
+                wayStart: FlyTrain.way+1,
+                wayFinish: way+1}, ...MovingTrain])
+              }
+              // -------------------------------------------------
 
               const xy = {x: koordi.clientX, y: koordi.clientY}
               const i = Math.floor((xy.y-table.current.offsetTop-5)/52)-1
@@ -406,20 +414,17 @@ const Main = () => {
                   if (!FlyTrain) {
                     
                     // ---------Отслеживание операций----------------
-                    let f = true
-                    for (let i = 0; i < MovingTrain.length; i++) {
-                      if (FlyTrain.train[0]==MovingTrain[i].number || FlyTrain.train[2]==MovingTrain[i].way) {
-                        let ArrMovingTrain = Array.from(MovingTrain)
-                        ArrMovingTrain[i] = {number: FlyTrain.train[0], way: way+1}
-                        SetMovingTrain(ArrMovingTrain)
-                        f = false
-                      }
-                    }
-                    if (f) {
-                      SetMovingTrain([{
-                      number: FlyTrain.train[0],
-                      way: way+1}, ...MovingTrain])
-                    }
+                    // let f = true
+                    // for (let i = 0; i < MovingTrain.length; i++) {
+                    //   if (FlyTrain.train[0]==MovingTrain[i].number || FlyTrain.train[2]==MovingTrain[i].way) {
+                    //     f = false
+                    //   }
+                    // }
+                    // if (f) {
+                    //   SetMovingTrain([{
+                    //   number: FlyTrain.train[0],
+                    //   way: way+1}, ...MovingTrain])
+                    // }
                     // -------------------------------------------------
 
                     const xy = {x: koordi.clientX, y: koordi.clientY}
@@ -508,7 +513,7 @@ const Main = () => {
       </div>
 
       <div className="colomuns">
-          <div className="item">Л (Чётная)</div>
+          <div className="header">Л (Чётная)</div>
           {Loco.NotCH.map((e, id)=>
           <div key={id} className="item mec ">{e?
             e.map((el, idl)=>
@@ -533,7 +538,7 @@ const Main = () => {
 
          </div>
          {OperationF?MovingTrain.map((e, id)=>
-            <OperationOnStation flagFunc={SetOperationF} SetMovingTrain={SetMovingTrain} MovingTrain={MovingTrain} numberOperation={id}/>
+            <OperationOnStation flagFunc={SetOperationF} SetMovingTrain={SetMovingTrain} MovingTrain={MovingTrain} numberOperation={id} />
          )
          :null}
      </div>
