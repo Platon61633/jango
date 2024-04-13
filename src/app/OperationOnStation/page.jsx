@@ -2,9 +2,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../OperationOnStation.css'
 import axios from 'axios';
+import Loader from '@/components/Loader';
 
 
-const OperationOnStation = ({flagFunc, SetMovingTrain, MovingTrain, numberOperation}) => {
+const OperationOnStation = ({flagFunc, CH, NotCH, SetMovingTrain, MovingTrain, numberOperation}) => {
 
 
     const Train = MovingTrain[numberOperation]
@@ -14,7 +15,9 @@ const OperationOnStation = ({flagFunc, SetMovingTrain, MovingTrain, numberOperat
     const [CustomOP , SetCustomOP] = useState(false);
     const [StartTime , SetStartTime] = useState(new Date().toLocaleString().slice(6, 10)+'-'+new Date().toLocaleString().slice(3, 5)+'-'+new Date().toLocaleString().slice(0, 2)+'T'+new Date().toLocaleString().slice(12, 17));
     const [FinishTime , SetFinishTime] = useState(new Date().toLocaleString().slice(6, 10)+'-'+new Date().toLocaleString().slice(3, 5)+'-'+new Date().toLocaleString().slice(0, 2)+'T'+new Date().toLocaleString().slice(12, 17));
-    const [StartTrain , SetStartTrain] = useState();
+    const [Load , SetLoad] = useState(false);
+    
+    
     
     
 
@@ -34,6 +37,8 @@ const OperationOnStation = ({flagFunc, SetMovingTrain, MovingTrain, numberOperat
 'Отцепка вагонов от состава', 'Выгрузка', 'Погрузка', 'Очистка вагонов от снега']
     
     const Parks = ['А', 'Б', 'В', 'П']
+
+    
     
 
     useEffect(()=>{
@@ -60,9 +65,30 @@ const OperationOnStation = ({flagFunc, SetMovingTrain, MovingTrain, numberOperat
         }
         SetMovingTrain(MovingTrain.slice(0, numberOperation))
     }
+    
+    const PostOperation = async ()=>{
+        SetLoad(true)
+        await axios.post('https://evraz-back.vercel.app/api?need=operation', JSON.stringify(
+            [   RefReason.current.value, 
+                RefType.current.value,
+                Number(Train.locoCH)?Number(Train.locoCH):0,
+                Number(Train.locoNotCH)?Number(Train.locoNotCH):0, 
+                Number(Train.number),
+                RefStartStation.current.value+' '+RefStartPark.current.value+' '+RefStartWay.current.value,
+                RefFinishStation.current.value+' '+RefFinishPark.current.value+' '+RefFinishWay.current.value,
+                Number(Minut),
+                StartTime,
+                FinishTime,
+                
+            ]   
+        )).then(a=>console.log(a.data))
+        SetLoad(false)
+        nextOperation()
+    }
 
     return(
         <div className='OperationOnStation'>
+            {Load?<Loader/>:null}
             <h2>Регистрация операции {numberOperation+1}</h2>
             <hr />
             {/* <div className='p'>Иполняемая операция: {NumOp}</p> */}
@@ -107,7 +133,7 @@ const OperationOnStation = ({flagFunc, SetMovingTrain, MovingTrain, numberOperat
                     }
                     <div>
                         <div>Причина</div>
-                        <input ref={RefReason} placeholder='Введите проблему'/>
+                        <textarea ref={RefReason} placeholder='Введите проблему'/>
                     </div>
                 </div>
                 <div className="item row">
@@ -181,11 +207,13 @@ const OperationOnStation = ({flagFunc, SetMovingTrain, MovingTrain, numberOperat
                         </div>
                     </div>
                 </div>
-                <div className="item">
+                {CH?
+                CH.map((e,id)=>
+                <div className='item'>
                     <div>
-                        <div>Локомотив №1*</div>
+                        <div>Чёт. Локомотив №{id+1}</div>
                         <select>
-                            <option>3</option>
+                            <option>{e[0]}</option>
                             <option>3</option>
                             <option>3</option>
                         </select>
@@ -198,85 +226,41 @@ const OperationOnStation = ({flagFunc, SetMovingTrain, MovingTrain, numberOperat
                             <option>3</option>
                         </select>
                     </div>
-                </div>
-                <div className="item">
-                    <div>
-                        <div>Локомотив №1*</div>
-                        <select>
-                            <option>3</option>
-                            <option>3</option>
-                            <option>3</option>
-                        </select>
-                    </div>
-                    <div>
-                        <div>ФИО машиниста</div>
-                        <select>
-                            <option>3</option>
-                            <option>3</option>
-                            <option>3</option>
-                        </select>
-                    </div>
-                </div>
-                <div className="item">
-                    <div>
-                        <div>Локомотив №1*</div>
-                        <select>
-                            <option>3</option>
-                            <option>3</option>
-                            <option>3</option>
-                        </select>
-                    </div>
-                    <div>
-                        <div>ФИО машиниста</div>
-                        <select>
-                            <option>3</option>
-                            <option>3</option>
-                            <option>3</option>
-                        </select>
-                    </div>
-                </div>
-                <div className="item">
-                    <div>
-                        <div>Локомотив №1*</div>
-                        <select>
-                            <option>3</option>
-                            <option>3</option>
-                            <option>3</option>
-                        </select>
-                    </div>
-                    <div>
-                        <div>ФИО машиниста</div>
-                        <select>
-                            <option>3</option>
-                            <option>3</option>
-                            <option>3</option>
-                        </select>
-                    </div>
-                </div>
+                </div>)
+                :
+                null}
+                {NotCH?
+                NotCH.map((e,id)=>
+                    <div className='item'>
+                        <div>
+                            <div>Нечёт. Локомотив №{id+1}</div>
+                            <select>
+                                <option>{e[0]}</option>
+                                <option>3</option>
+                                <option>3</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div>ФИО машиниста</div>
+                            <select>
+                                <option>3</option>
+                                <option>3</option>
+                                <option>3</option>
+                            </select>
+                        </div>
+                    </div>)
+                    :null}
+                
                 
             </div>
             <hr />
             <div className='submit'>
                 <div style={{color: '#15386C', fontWeight: 800, display: 'flex', flexDirection: 'column', gap: 20}}>
-                    <div onClick={()=>nextOperation()}>Отмена</div>
+                    <div onClick={nextOperation}>Отмена</div>
                     <div onClick={()=>flagFunc(false)}>Отменить всё</div>
                 </div>
                 
-                <div onClick={()=>console.log(
-                {StartTime,
-                FinishTime,
-                Type: RefType.current.value,
-                Reason: RefReason.current.value,
-                StartStation: RefStartStation.current.value,
-                FinishStation: RefFinishStation.current.value,
-                StartPark: RefStartPark.current.value,
-                FinishPark: RefFinishPark.current.value,
-                StartWay: RefStartWay.current.value,
-                FInishWay: RefFinishWay.current.value,
-                Napravlenie: RefNapravlenie.current.value
-                },
-                Train,
-                RefStartWay.current.value)} className="btn">Сохранить</div>
+                <div onClick={PostOperation} className="btn">Сохранить</div>
             </div>
         </div>
     );

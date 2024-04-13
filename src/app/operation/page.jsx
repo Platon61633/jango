@@ -2,10 +2,13 @@
 import axios from 'axios';
 import '../operation.css';
 import React, { useEffect, useState } from 'react';
+import Loader from '@/components/Loader';
 
 const Operation = () => {
 
     const [ArrOperation , SetArrOperation] = useState([[]]);
+    const [Load , SetLoad] = useState(false);
+    
     
 
     useEffect(()=>{
@@ -13,9 +16,21 @@ const Operation = () => {
         .then(e=>SetArrOperation(e.data))
     },[])
 
+    const deletePost = async (id)=>{
+        SetLoad(true)
+        await axios.delete('https://evraz-back.vercel.app/api?need=operation', {data: Number(id)}).then(e=>console.log(e.data))
+        for (let i = 0; i < ArrOperation.length; i++) {
+            if (id==ArrOperation[i][0]) {
+                SetArrOperation([...ArrOperation.slice(0, i), ...ArrOperation.slice(i+1, ArrOperation.length+1)])
+            }   
+        }
+        SetLoad(false)
+    }
+
 
     return(
         <div className='Operation'>
+            {Load?<Loader/>:null}
             <div className="filter">
                 <select name="" id="">
                     <option value="">cnfywbz</option>
@@ -69,8 +84,8 @@ const Operation = () => {
                         <tr key={id}>
                             {e.map((el, idi)=>
                                 <td key={idi}>{idi==0?<img className='circle' src="/img/GreyCircle.svg" alt="" />:null}{el}</td>)}
-                            <td><img width={20} src='/img/edit.svg'/></td>
-                            <td><img width={20} src="/img/delete.svg" alt="" /></td>
+                            <td ><img width={20} src='/img/edit.svg'/></td>
+                            <td onClick={()=>deletePost(e[0])}><img width={20} src="/img/delete.svg" alt="" /></td>
                         </tr>)}
                     
                 </tbody>

@@ -9,20 +9,35 @@ import OperationOnStation from '../OperationOnStation/page';
 
 
 const Main = () => {
+    
+    
+    const [ManyInfo, SetManyInfo] = useState({})
+    
+    const [InfoForm , SetInfoForm] = useState(false);
+    
+    const [OperationF , SetOperationF] = useState(false);
+    
+
+    // FOR TRAIN-------------------------
+    const [TypeOfSort , SetTypeOfSort] = useState('S');
+    const [NumberTrain, SetNumberTrain] = useState(true)
+    const [ColorSob, SetColorSob] = useState([])
+    const [MovingTrain , SetMovingTrain] = useState([]);
+    const [SearchTrain , SetSearchTrain] = useState('');
+    const [FindedTrain , SetFindedTrain] = useState('');
     const [Trains, SetTrains] = useState([])
     const [RightB, SetRightB] = useState(false)
     const [FlyTrain, SetFlyTrain] = useState(false)
-    const [PosTrain, SetPosTrain] = useState([0,0])
-    const [NumberTrain, SetNumberTrain] = useState(true)
-    const [ColorSob, SetColorSob] = useState([])
-    const [ManyInfo, SetManyInfo] = useState({})
-    const [TypeOfSort , SetTypeOfSort] = useState('S');
+    const [Pos, SetPos] = useState([0,0])
+    // FOR LOCO-------------------------------
     const [Loco , SetLoco] = useState({CH: [], NotCH: []});
-    const [InfoForm , SetInfoForm] = useState(false);
-    const [SearchTrain , SetSearchTrain] = useState('');
-    const [FindedTrain , SetFindedTrain] = useState('');
-    const [OperationF , SetOperationF] = useState(false);
-    const [MovingTrain , SetMovingTrain] = useState([]);
+    const [FlyLoco , SetFlyLoco] = useState(false);
+    const [MovingLoco , SetMovingLoco] = useState([]);
+    
+    // const [Pos , SetPos] = useState([0,0]);
+
+    
+    
     
     
 
@@ -38,7 +53,8 @@ const Main = () => {
 
 
     const table = useRef()
-    const trains = useRef(null)
+    const RefTrains = useRef(null)
+    const RefCHLoco = useRef(null)
 
   useEffect(()=> {
     const _FA = async ()=> {
@@ -100,22 +116,56 @@ const Main = () => {
 
   const PostTrains = async ()=>{
     const OldTrains = await axios.get("https://evraz-back.vercel.app/api?need=ns").then(e=>e.data)
-    let journality = []
+    let journalityTrain = []
     for (let ind = 0; ind < 6; ind++) {
       
-      if (JSON.stringify(OldTrains[ind])!==JSON.stringify(Trains[ind])) {
+      if (JSON.stringify(OldTrains.trains[ind])!==JSON.stringify(Trains[ind])) {
+        // if (JSON.stringify(OldTrains[ind])!==JSON.stringify(Trains[ind])) {
+          // console.log('j');
+        // }
         // console.log(OldTrains[ind] , Trains[ind]);
         if (Trains[ind].length) {
-          journality.push([ind+1, Trains[ind]])
+          journalityTrain.push([ind+1, Trains[ind]])
         }else{
-          journality.push([ind+1, 0])
+          journalityTrain.push([ind+1, 0])
         }
       }
     }
 
-    console.log(journality, 'l')
-    if (journality[0]) {
-      axios.post('https://evraz-back.vercel.app/api?need=ns', JSON.stringify(journality)).then(e=>console.log(e.data)).catch(er=>console.log(er))
+    // console.log(journalityTrain, 'l')
+
+    const OldLoco = await axios.get("https://evraz-back.vercel.app/api?need=ns").then(e=>e.data)
+
+    let journalityLocoCH = []
+    for (let ind = 0; ind < 6; ind++) {
+      
+      if (JSON.stringify(OldLoco.CH[ind])!==JSON.stringify(Loco.CH[ind])) {
+        if (Loco.CH[ind].length) {
+          journalityLocoCH.push([ind+1, Loco.CH[ind]])
+        }else{
+          journalityLocoCH.push([ind+1, 0])
+        }
+      }
+    }
+
+    let journalityLocoNotCH = []
+    for (let ind = 0; ind < 6; ind++) {
+      
+      if (JSON.stringify(OldLoco.NotCH[ind])!==JSON.stringify(Loco.NotCH[ind])) {
+        if (Loco.NotCH[ind].length) {
+          journalityLocoNotCH.push([ind+1, Loco.NotCH[ind]])
+        }else{
+          journalityLocoNotCH.push([ind+1, 0])
+        }
+      }
+    }
+
+
+    console.log(journalityLocoCH, 'l')
+
+    if (journalityLocoCH[0] || journalityLocoNotCH[0] || journalityTrain[0]) {
+      axios.post('https://evraz-back.vercel.app/api?need=ns', JSON.stringify([journalityTrain, [journalityLocoCH, journalityLocoNotCH]])).then(e=>console.log(e.data)).catch(er=>console.log(er))
+      // axios.post('https://evraz-back.vercel.app/api?need=ns', JSON.stringify(journalityLoco)).then(e=>console.log(e.data)).catch(er=>console.log(er))
     }
   }
 
@@ -142,6 +192,91 @@ const Main = () => {
         }
       }
     }
+  }
+
+  // LOCOMOTIVE------------------------------------------------------------------------
+
+  const locoFuncUp = (koordi, way, loco, type)=>{
+    if (FlyLoco) {
+      console.log(FlyLoco, loco);
+      let f = true
+    for (let i = 0; i < MovingLoco.length; i++) {
+      if (FlyLoco.loco[0]==MovingLoco[i].number) {
+        if (way!=FlyLoco.way) {
+          if (MovingLoco[i].wayStart==way) {
+            SetMovingLoco([...MovingLoco.slice(0, i), ...MovingLoco.slice(i+1)])
+          }else{
+          SetMovingLoco([{
+            number: FlyLoco.loco[0],
+            wayStart: MovingLoco[i].wayStart+1,
+            wayFinish: way+1},...MovingLoco.slice(0, i), ...MovingLoco.slice(i+1)])
+          }
+        } 
+        f = false
+        break
+      }
+    }
+    if (f && FlyLoco.way!=way) {
+      SetMovingLoco([{
+      number: FlyLoco.loco[0],
+      wayStart: FlyLoco.way+1,
+      wayFinish: way+1}, ...MovingLoco])
+    }
+
+    const xy = {x: koordi.clientX, y: koordi.clientY}
+    const i = Math.floor((xy.y-table.current.offsetTop-5)/52)-1
+  
+    let LocoArr = Array.from(loco)
+  let OneLocoArr = Array.from(loco[i])
+  let j = Math.floor((Math.floor((xy.x-RefCHLoco.current.offsetLeft-3)/30.5)+1)/2)
+
+  if (OneLocoArr[OneLocoArr.length-1]) {
+    let LastTrain = Number(OneLocoArr[OneLocoArr.length-1][2])
+    if (LastTrain+1<j) {
+      j = LastTrain+1
+    }
+  }else{
+    j = 1
+  }
+  
+  SetFlyLoco({...FlyLoco, loco: [...FlyLoco.loco, FlyLoco.loco[2]=j]})
+
+  OneLocoArr.splice(j, 0, FlyLoco.loco)
+   for (let index = j; index < OneLocoArr.length; index++) {
+   if (OneLocoArr[index]) OneLocoArr[index][2]++
+ }
+
+  LocoArr.splice(i, 1, OneLocoArr)
+  SetLoco('CH'===type?{CH: LocoArr, NotCH: Loco.NotCH}:{NotCH: LocoArr, CH: Loco.CH})
+
+    SetFlyLoco(false)
+    }
+  }
+
+  const locoFuncDown = (koordi, way, el, loco, type)=>{
+    if (!FlyLoco) {
+      const xy = {x: koordi.clientX, y: koordi.clientY}
+      let LocoArr = Array.from(loco)
+
+      console.log(LocoArr[way], LocoArr, way);
+
+      LocoArr[way].splice(el[2]-1, 1)
+      // console.log(LocoArr);
+      // LocoArr[way].splice(el[2]-1, 1)
+
+      // for (let index = el[2]-1; index < LocoArr[way].length; index++) {
+      //   if (LocoArr[way][index]) LocoArr[way][index][2]--
+      // }
+      SetFlyLoco({
+        loco: el,
+        way: way,
+      })
+      SetPos([xy.x, xy.y])
+      SetLoco('CH'===type?{CH: LocoArr, NotCH: Loco.NotCH}:{NotCH: LocoArr, CH: Loco.CH})
+    }
+
+    
+    
   }
   
  
@@ -269,8 +404,10 @@ const Main = () => {
                </div>
 
 
-              
-      <div className="table" ref={table}>
+           
+      <div className="table" ref={table} onMouseMove={e=>
+      { if (FlyLoco) SetPos([e.clientX, e.clientY])}}
+      style={FlyLoco?{cursor: "grab"}:{}}>
         <div className="colomuns info">
           <div className="item" onClick={e=>InfoForm?SetInfoForm(false):SetInfoForm(true)}><img src="/img/info.svg" alt="" /></div>
           {InfoForm?<div className="infoform">
@@ -296,13 +433,31 @@ const Main = () => {
             </div>
             )}
         </div>
+        
+        
 
         <div className="colomuns">
           <div className="header">Л (Чётная)</div>
-          {Loco.CH.map((e, id)=>
-          <div key={id} className="item mec ">{e?
+
+          {FlyLoco?
+              <div className="FlyLoco"  style={{left: Pos[0]+2, top: Pos[1]-15}}>
+                <span>{FlyLoco.loco[0]}</span>
+                <img src="/img/trainL.svg" />
+              </div>
+            :<></>
+          }   
+
+          {Loco.CH.map((e, way)=>
+          <div key={way} className="item mec" ref={RefCHLoco} onMouseUp={
+            (koordi)=>locoFuncUp(koordi, way, Loco.CH, 'CH')
+            }>
+
+
+            {e?
             e.map((el, idl)=>
-            <div className="locomotive" key={idl}>
+            <div className="locomotive" key={idl} onMouseDown={
+              (koordi)=>locoFuncDown(koordi, way, el, Loco.CH, 'CH')
+              }>
               <img src="/img/trainL.svg" alt="" width={26}/>
               <span>{el[0]}</span>
             </div>)
@@ -311,14 +466,14 @@ const Main = () => {
         }
         </div>
       <div className="columns" onMouseMove={e=>
-      { if (FlyTrain) SetPosTrain([e.clientX, e.clientY])}}
+      { if (FlyTrain) SetPos([e.clientX, e.clientY])}}
       style={FlyTrain?{cursor: "grab"}:{}}
       >
       <div className="header"></div>
 
 
       {FlyTrain?
-              <div className="FlyTrain"  style={{left: PosTrain[0]+2, top: PosTrain[1]-15}}>
+              <div className="FlyTrain"  style={{left: Pos[0]+2, top: Pos[1]-15}}>
 
                 <span>{FlyTrain.train[0]}</span>
                 <img src={FlyTrain.img} />
@@ -361,6 +516,8 @@ const Main = () => {
               if (f && FlyTrain.way!=way) {
                 SetMovingTrain([{
                 number: FlyTrain.train[0],
+                locoCH: `${Loco.CH[FlyTrain.way][0][0]}${Loco.CH[FlyTrain.way].length>1?' '+Loco.CH[FlyTrain.way][1][0]:''}`,
+                locoNotCH: `${Loco.NotCH[FlyTrain.way][0][0]}${Loco.NotCH[FlyTrain.way].length>1?' '+Loco.NotCH[FlyTrain.way][1][0]:''}`,
                 wayStart: FlyTrain.way+1,
                 wayFinish: way+1}, ...MovingTrain])
               }
@@ -371,7 +528,7 @@ const Main = () => {
             
                   let TrainsArr = Array.from(Trains)
             let TrainArr = Array.from(Trains[i])
-            let j = Math.floor((Math.floor((xy.x-trains.current.offsetLeft-3)/30.5)+1)/2)
+            let j = Math.floor((Math.floor((xy.x-RefTrains.current.offsetLeft-3)/30.5)+1)/2)
 
             if (TrainArr[TrainArr.length-1]) {
               let LastTrain = Number(TrainArr[TrainArr.length-1][2])
@@ -397,7 +554,7 @@ const Main = () => {
           
 
           {e?
-          <div className="trains" ref={trains}>
+          <div className="trains" ref={RefTrains}>
             
             {e.map(
               
@@ -458,7 +615,8 @@ const Main = () => {
                 ...xy,
                 img: "/img/trains/"+el[1]+"/"+el[6]+"/"+el[3]+"/1.svg", 
                 })
-                SetPosTrain([xy.x, xy.y])
+                SetPos([xy.x, xy.y])
+                console.log('gg');
                 SetTrains(TrainsArr)
               }
               
@@ -513,11 +671,16 @@ const Main = () => {
       </div>
 
       <div className="colomuns">
-          <div className="header">Л (Чётная)</div>
-          {Loco.NotCH.map((e, id)=>
-          <div key={id} className="item mec ">{e?
+          <div className="header">Л (Нечётная)</div>
+          {Loco.NotCH.map((e, way)=>
+          <div key={way} className="item mec " onMouseUp={
+            (koordi)=>locoFuncUp(koordi, way, Loco.NotCH, 'NotCH')
+            }>
+          {e?
             e.map((el, idl)=>
-            <div className="locomotive" key={idl}>
+            <div className="locomotive" key={idl} onMouseDown={
+              (koordi)=>locoFuncDown(koordi, way, el, Loco.NotCH, 'NotCH')
+              }>
               <img src="/img/trainL.svg" alt="" width={26}/>
               <span>{el[0]}</span>
             </div>)
@@ -528,10 +691,9 @@ const Main = () => {
       </div>
       
       {/* <div onClick={PostTrains} className="posttrain"> */}
-      <div style={{marginTop: 300}} onClick={()=>console.log(trains.current.offsetLeft, table.current.offsetTop)} className="posttrain">
+      <div onClick={PostTrains} className="posttrain">
         Click
       </div>
-
       
               
 
@@ -539,7 +701,7 @@ const Main = () => {
 
          </div>
          {OperationF?MovingTrain.map((e, id)=>
-            <OperationOnStation flagFunc={SetOperationF} SetMovingTrain={SetMovingTrain} MovingTrain={MovingTrain} numberOperation={id} />
+            <OperationOnStation flagFunc={SetOperationF} CH={Loco.CH[MovingTrain[0].wayStart-1]} NotCH={Loco.NotCH[MovingTrain[0].wayStart-1]} SetMovingTrain={SetMovingTrain} MovingTrain={MovingTrain} numberOperation={id} />
          )
          :null}
      </div>

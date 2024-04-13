@@ -3,3 +3,15 @@
     color: white;
     padding: 12px 16px;
 }
+
+.Loader{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    z-index: 2;
+    background-color: rgba(0, 0, 0, 0.447);
+    height: 100%;
+    width: 100%;
+    inset: 0;
+}
