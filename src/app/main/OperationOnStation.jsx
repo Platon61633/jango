@@ -5,7 +5,7 @@ import axios from 'axios';
 import Loader from '@/components/Loader';
 
 
-const OperationOnStation = ({flagFunc, CH, NotCH, SetMovingTrain, MovingTrain, numberOperation}) => {
+const OperationOnStation = ({flagFunc, CancelTrains, SetCancelTrains, CH, NotCH, SetMovingTrain, MovingTrain, numberOperation}) => {
 
 
     const Train = MovingTrain[numberOperation]
@@ -58,11 +58,15 @@ const OperationOnStation = ({flagFunc, CH, NotCH, SetMovingTrain, MovingTrain, n
         // StartTime.current
     },[])
     
-    const nextOperation = ()=>{
-        console.log(MovingTrain);
+    
+    const nextOperation = (num)=>{
+        // console.log(MovingTrain);
         if (numberOperation==0) {
             flagFunc(false)
         }
+        SetCancelTrains([num, ...CancelTrains])
+        
+
         SetMovingTrain(MovingTrain.slice(0, numberOperation))
     }
     
@@ -256,7 +260,7 @@ const OperationOnStation = ({flagFunc, CH, NotCH, SetMovingTrain, MovingTrain, n
             <hr />
             <div className='submit'>
                 <div style={{color: '#15386C', fontWeight: 800, display: 'flex', flexDirection: 'column', gap: 20}}>
-                    <div onClick={nextOperation}>Отмена</div>
+                    <div onClick={()=>nextOperation(Train.number)}>Отмена</div>
                     <div onClick={()=>flagFunc(false)}>Отменить всё</div>
                 </div>
                 

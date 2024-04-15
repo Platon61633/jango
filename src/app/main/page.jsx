@@ -4,7 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import Translate from "translate";
-import OperationOnStation from '../OperationOnStation/page';
+import OperationOnStation from './OperationOnStation';
 
 
 
@@ -12,7 +12,6 @@ const Main = () => {
     
     
     const [ManyInfo, SetManyInfo] = useState({})
-    
     const [InfoForm , SetInfoForm] = useState(false);
     
     const [OperationF , SetOperationF] = useState(false);
@@ -29,6 +28,8 @@ const Main = () => {
     const [RightB, SetRightB] = useState(false)
     const [FlyTrain, SetFlyTrain] = useState(false)
     const [Pos, SetPos] = useState([0,0])
+    const [CancelTrains , SetCancelTrains] = useState([]);
+    
     // FOR LOCO-------------------------------
     const [Loco , SetLoco] = useState({CH: [], NotCH: []});
     const [FlyLoco , SetFlyLoco] = useState(false);
@@ -513,14 +514,19 @@ const Main = () => {
                   break
                 }
               }
-              if (f && FlyTrain.way!=way) {
+              const FlyTrainWay = FlyTrain.way     //оптимизация
+              if (f && FlyTrainWay!=way) {
                 SetMovingTrain([{
                 number: FlyTrain.train[0],
-                locoCH: `${Loco.CH[FlyTrain.way][0][0]}${Loco.CH[FlyTrain.way].length>1?' '+Loco.CH[FlyTrain.way][1][0]:''}`,
-                locoNotCH: `${Loco.NotCH[FlyTrain.way][0][0]}${Loco.NotCH[FlyTrain.way].length>1?' '+Loco.NotCH[FlyTrain.way][1][0]:''}`,
-                wayStart: FlyTrain.way+1,
+                locoCH: Loco.CH[FlyTrainWay]?Loco.CH[FlyTrainWay].map(elem=>elem[0]).join(' '):null,
+                locoNotCH: Loco.NotCH[FlyTrainWay]?Loco.NotCH[FlyTrainWay].map(elem=>elem[0]).join(' '):null,
+                wayStart: FlyTrainWay+1,
                 wayFinish: way+1}, ...MovingTrain])
               }
+
+
+
+              console.log(MovingTrain, 'K');
               // -------------------------------------------------
 
               const xy = {x: koordi.clientX, y: koordi.clientY}
@@ -610,6 +616,7 @@ const Main = () => {
                 
 
                 SetFlyTrain({
+                
                 train: el,
                 way: way,
                 ...xy,
@@ -691,7 +698,7 @@ const Main = () => {
       </div>
       
       {/* <div onClick={PostTrains} className="posttrain"> */}
-      <div onClick={PostTrains} className="posttrain">
+      <div onClick={()=>console.log(CancelTrains)} className="posttrain">
         Click
       </div>
       
@@ -701,7 +708,7 @@ const Main = () => {
 
          </div>
          {OperationF?MovingTrain.map((e, id)=>
-            <OperationOnStation flagFunc={SetOperationF} CH={Loco.CH[MovingTrain[0].wayStart-1]} NotCH={Loco.NotCH[MovingTrain[0].wayStart-1]} SetMovingTrain={SetMovingTrain} MovingTrain={MovingTrain} numberOperation={id} />
+            <OperationOnStation flagFunc={SetOperationF} CancelTrains={CancelTrains} SetCancelTrains={SetCancelTrains} CH={Loco.CH[MovingTrain[0].wayStart-1]} NotCH={Loco.NotCH[MovingTrain[0].wayStart-1]} SetMovingTrain={SetMovingTrain} MovingTrain={MovingTrain} numberOperation={id} />
          )
          :null}
      </div>
