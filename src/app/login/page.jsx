@@ -1,31 +1,15 @@
 "use client"
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import '../login.css'
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { useCookies } from 'react-cookie';
 
 const Login = () => {
-    
-    const [cookies, setCookie, removeCookie] = useCookies(['user']);
-
-    useEffect(()=>{
-        const ArrCookies = JSON.stringify(cookies).slice(2,-1)
-        let f = false
-        for (let i = 0; i < ArrCookies.length; i++) {
-            if (ArrCookies[i]=='"') {
-                SetName(ArrCookies(0, i))
-            }
-            break
-        }
-    },[cookies])
 
     const router = useRouter()
 
-    
-
     const [Name , SetName] = useState('');
-    const [Password , SetPassword] = useState('');
+    const [Password , SetPassword] = useState();
     const [Station, SetStation] = useState('ns')
      
 
@@ -35,15 +19,11 @@ const Login = () => {
 
     const Authorization = async ()=>{
         await axios.post("https://evraz-back.vercel.app/api?need=authorization", [Name, Password])
-        .then(id=>{
-            if (id.data) {
-                setCookie(Name, [Password, Station], { path: '/', })
+        .then(id=>{{id.data?
                 router.push(`/station/${id.data}/${Password}/${Station}`, { scroll: false })
-            } else {
-                console.log('no')
-            }
-            
-        })
+            :
+            console.log('no')
+        }});
     }
 
     return(
