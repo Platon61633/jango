@@ -1,3 +1,8 @@
+*{
+    padding: 0px;
+    margin: 0px;
+}
+
 .btn{
     background-color: #15386C;
     color: white;

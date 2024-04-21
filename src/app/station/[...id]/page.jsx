@@ -1,65 +1,59 @@
 "use client";
-import '../main.css'
+import '../../main.css'
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import Translate from "translate";
-import OperationOnStation from './OperationOnStation';
+import OperationOnStation from '../../OperationOnStation/OperationOnStation';
+import { useCookies } from 'react-cookie';
 
 
 
-const Main = () => {
-    
-    
-    const [ManyInfo, SetManyInfo] = useState({})
-    const [InfoForm , SetInfoForm] = useState(false);
-    
-    const [OperationF , SetOperationF] = useState(false);
-    
 
-    // FOR TRAIN-------------------------
-    const [TypeOfSort , SetTypeOfSort] = useState('S');
-    const [NumberTrain, SetNumberTrain] = useState(true)
-    const [ColorSob, SetColorSob] = useState([])
-    const [MovingTrain , SetMovingTrain] = useState([]);
-    const [SearchTrain , SetSearchTrain] = useState('');
-    const [FindedTrain , SetFindedTrain] = useState('');
-    const [Trains, SetTrains] = useState([])
-    const [RightB, SetRightB] = useState(false)
-    const [FlyTrain, SetFlyTrain] = useState(false)
-    const [Pos, SetPos] = useState([0,0])
-    const [CancelTrains , SetCancelTrains] = useState([]);
+const Station = ({params}) => {
+  
     
-    // FOR LOCO-------------------------------
-    const [Loco , SetLoco] = useState({CH: [], NotCH: []});
-    const [FlyLoco , SetFlyLoco] = useState(false);
-    const [MovingLoco , SetMovingLoco] = useState([]);
     
-    // const [Pos , SetPos] = useState([0,0]);
+  const [ManyInfo, SetManyInfo] = useState({})
+  const [InfoForm , SetInfoForm] = useState(false);
+  
+  const [OperationF , SetOperationF] = useState(false);
+  
+  // FOR TRAIN-------------------------
+  const [TypeOfSort , SetTypeOfSort] = useState('S');
+  const [NumberTrain, SetNumberTrain] = useState(true)
+  const [ColorSob, SetColorSob] = useState([])
+  const [MovingTrain , SetMovingTrain] = useState([]);
+  const [SearchTrain , SetSearchTrain] = useState('');
+  const [FindedTrain , SetFindedTrain] = useState('');
+  const [Trains, SetTrains] = useState([])
+  const [RightB, SetRightB] = useState(false)
+  const [FlyTrain, SetFlyTrain] = useState(false)
+  const [Pos, SetPos] = useState([0,0])
+  
+  // FOR LOCO-------------------------------
+  const [Loco , SetLoco] = useState({CH: [], NotCH: []});
+  const [FlyLoco , SetFlyLoco] = useState(false);
+  const [MovingLoco , SetMovingLoco] = useState([]);
+  
+  // const [Pos , SetPos] = useState([0,0]);
+  
+  
+  
+  
+  
+  // const [SortSob , SetSortSob] = useState(false);
 
-    
-    
-    
-    
-
-
-    const [DataSome , SetDataSome] = useState();
-    
-    
-    
-    
-    
-    // const [SortSob , SetSortSob] = useState(false);
-    
-
-
-    const table = useRef()
-    const RefTrains = useRef(null)
-    const RefCHLoco = useRef(null)
+  
+  
+  const table = useRef()
+  const RefTrains = useRef(null)
+  const RefCHLoco = useRef(null)
 
   useEffect(()=> {
+
+    console.log(params.id)
     const _FA = async ()=> {
-      await axios.get("https://evraz-back.vercel.app/api?need=ns")
+      await axios.get(`https://evraz-back.vercel.app/api?need=station&station=${params.id[2]}&id=${params.id[0]}&password=${params.id[1]}`)
       .then(e=>{
         const arr = e.data.trains
         let ColorSobArr = []
@@ -116,7 +110,7 @@ const Main = () => {
   
 
   const PostTrains = async ()=>{
-    const OldTrains = await axios.get("https://evraz-back.vercel.app/api?need=ns").then(e=>e.data)
+    const OldTrains = await axios.get(`https://evraz-back.vercel.app/api?need=station&station=${params.id[2]}&id=${params.id[0]}&password=${params.id[1]}`).then(e=>e.data)
     let journalityTrain = []
     for (let ind = 0; ind < 6; ind++) {
       
@@ -135,7 +129,7 @@ const Main = () => {
 
     // console.log(journalityTrain, 'l')
 
-    const OldLoco = await axios.get("https://evraz-back.vercel.app/api?need=ns").then(e=>e.data)
+    const OldLoco = await axios.get(`https://evraz-back.vercel.app/api?need=station&station=${params.id[2]}&id=${params.id[0]}&password=${params.id[1]}`).then(e=>e.data)
 
     let journalityLocoCH = []
     for (let ind = 0; ind < 6; ind++) {
@@ -165,10 +159,22 @@ const Main = () => {
     console.log(journalityLocoCH, 'l')
 
     if (journalityLocoCH[0] || journalityLocoNotCH[0] || journalityTrain[0]) {
-      axios.post('https://evraz-back.vercel.app/api?need=ns', JSON.stringify([journalityTrain, [journalityLocoCH, journalityLocoNotCH]])).then(e=>console.log(e.data)).catch(er=>console.log(er))
+      axios.post(`https://evraz-back.vercel.app/api?need=station&station=${params.id[2]}`, JSON.stringify([journalityTrain, [journalityLocoCH, journalityLocoNotCH]])).then(e=>console.log(e.data)).catch(er=>console.log(er))
       // axios.post('https://evraz-back.vercel.app/api?need=ns', JSON.stringify(journalityLoco)).then(e=>console.log(e.data)).catch(er=>console.log(er))
     }
   }
+
+  const CancelTrain = (train)=>{
+    const Finish = train.wayFinish
+    const Start = train.wayStart
+    const pos = train.pos
+    // console.log(train)
+    // console.log('way: '+(train.wayFinish), 'pos: '+train.pos)
+    let ArrTrain = Array.from([...Trains.slice(0, Finish-1), [...Trains[Finish-1].slice(0, train.pos), ...Trains[Finish-1].slice(pos+1, Trains[Finish-1].length)], ...Trains.slice(Finish, 6)])
+    // console.log(ArrTrain);
+    // console.log(Trains[Start-1][pos], TraStart: '+train.wayStpos: '+pos);
+    SetTrains([...ArrTrain.slice(0, Start-1), [...ArrTrain[Start-1], Trains[Finish-1][pos]], ...ArrTrain.slice(Start, 6)]);
+}
 
   const GetSearchTrain = (e)=>{
     if (!e) {
@@ -496,39 +502,6 @@ const Main = () => {
           (koordi)=>{
             if (FlyTrain) {
 
-              // ---------Отслеживание операций----------------
-              let f = true
-              for (let i = 0; i < MovingTrain.length; i++) {
-                if (FlyTrain.train[0]==MovingTrain[i].number) {
-                  if (way!=FlyTrain.way) {
-                    if (MovingTrain[i].wayStart==way) {
-                      SetMovingTrain([...MovingTrain.slice(0, i), ...MovingTrain.slice(i+1)])
-                    }else{
-                    SetMovingTrain([{
-                      number: FlyTrain.train[0],
-                      wayStart: MovingTrain[i].wayStart+1,
-                      wayFinish: way+1},...MovingTrain.slice(0, i), ...MovingTrain.slice(i+1)])
-                    }
-                  } 
-                  f = false
-                  break
-                }
-              }
-              const FlyTrainWay = FlyTrain.way     //оптимизация
-              if (f && FlyTrainWay!=way) {
-                SetMovingTrain([{
-                number: FlyTrain.train[0],
-                locoCH: Loco.CH[FlyTrainWay]?Loco.CH[FlyTrainWay].map(elem=>elem[0]).join(' '):null,
-                locoNotCH: Loco.NotCH[FlyTrainWay]?Loco.NotCH[FlyTrainWay].map(elem=>elem[0]).join(' '):null,
-                wayStart: FlyTrainWay+1,
-                wayFinish: way+1}, ...MovingTrain])
-              }
-
-
-
-              console.log(MovingTrain, 'K');
-              // -------------------------------------------------
-
               const xy = {x: koordi.clientX, y: koordi.clientY}
               const i = Math.floor((xy.y-table.current.offsetTop-5)/52)-1
             
@@ -555,7 +528,43 @@ const Main = () => {
             TrainsArr.splice(i, 1, TrainArr)
             SetFlyTrain(false)
             SetTrains(TrainsArr)
-                  }}
+            
+            // ---------Отслеживание операций----------------
+            let f = true
+            for (let i = 0; i < MovingTrain.length; i++) {
+              if (FlyTrain.train[0]==MovingTrain[i].number) {
+                if (way!=FlyTrain.way) {
+                  if (MovingTrain[i].wayStart==way) {
+                    SetMovingTrain([...MovingTrain.slice(0, i), ...MovingTrain.slice(i+1)])
+                  }else{
+                  SetMovingTrain([{
+                    number: FlyTrain.train[0],
+                    wayStart: MovingTrain[i].wayStart+1,
+                    wayFinish: way+1},...MovingTrain.slice(0, i), ...MovingTrain.slice(i+1)])
+                  }
+                } 
+                f = false
+                break
+              }
+            }
+            const FlyTrainWay = FlyTrain.way     //оптимизация
+            if (f && FlyTrainWay!=way) {
+              SetMovingTrain([{
+              pos: j,
+              number: FlyTrain.train[0],
+              locoCH: Loco.CH[FlyTrainWay]?Loco.CH[FlyTrainWay].map(elem=>elem[0]).join(' '):null,
+              locoNotCH: Loco.NotCH[FlyTrainWay]?Loco.NotCH[FlyTrainWay].map(elem=>elem[0]).join(' '):null,
+              wayStart: FlyTrainWay+1,
+              wayFinish: way+1}, ...MovingTrain])
+            }
+
+
+
+            // console.log(MovingTrain, 'K');
+            // -------------------------------------------------
+          }
+            
+                }
               }>
           
 
@@ -616,7 +625,6 @@ const Main = () => {
                 
 
                 SetFlyTrain({
-                
                 train: el,
                 way: way,
                 ...xy,
@@ -696,10 +704,12 @@ const Main = () => {
         }
         </div>
       </div>
-      
       {/* <div onClick={PostTrains} className="posttrain"> */}
-      <div onClick={()=>console.log(CancelTrains)} className="posttrain">
+      <div onClick={()=>{console.log(cookies);}} className="posttrain">
         Click
+      </div>
+      <div>
+        <input onChange={(e)=>{}}/>
       </div>
       
               
@@ -708,11 +718,11 @@ const Main = () => {
 
          </div>
          {OperationF?MovingTrain.map((e, id)=>
-            <OperationOnStation flagFunc={SetOperationF} CancelTrains={CancelTrains} SetCancelTrains={SetCancelTrains} CH={Loco.CH[MovingTrain[0].wayStart-1]} NotCH={Loco.NotCH[MovingTrain[0].wayStart-1]} SetMovingTrain={SetMovingTrain} MovingTrain={MovingTrain} numberOperation={id} />
+            <OperationOnStation flagFunc={SetOperationF} CancelTrain={CancelTrain} CH={Loco.CH[MovingTrain[0].wayStart-1]} NotCH={Loco.NotCH[MovingTrain[0].wayStart-1]} SetMovingTrain={SetMovingTrain} MovingTrain={MovingTrain} numberOperation={id} />
          )
          :null}
      </div>
   );
 };
 
-export default Main
+export default Station

@@ -5,7 +5,7 @@ import axios from 'axios';
 import Loader from '@/components/Loader';
 
 
-const OperationOnStation = ({flagFunc, CancelTrains, SetCancelTrains, CH, NotCH, SetMovingTrain, MovingTrain, numberOperation}) => {
+const OperationOnStation = ({flagFunc, CancelTrain, CH, NotCH, SetMovingTrain, MovingTrain, numberOperation}) => {
 
 
     const Train = MovingTrain[numberOperation]
@@ -59,12 +59,11 @@ const OperationOnStation = ({flagFunc, CancelTrains, SetCancelTrains, CH, NotCH,
     },[])
     
     
-    const nextOperation = (num)=>{
+    const nextOperation = ()=>{
         // console.log(MovingTrain);
         if (numberOperation==0) {
             flagFunc(false)
         }
-        SetCancelTrains([num, ...CancelTrains])
         
 
         SetMovingTrain(MovingTrain.slice(0, numberOperation))
@@ -182,11 +181,7 @@ const OperationOnStation = ({flagFunc, CancelTrains, SetCancelTrains, CH, NotCH,
                     <div className='p'>
                         <div>
                               <div>Путь отправления</div>
-                              <select ref={RefStartWay}>
-                                <option>Выберите из списка</option>
-                                  {[1, 2, 3, 4, 5, 6].map(e=>
-                                  <option key={e} selected={e==Train.wayStart?'selected':null}>{e}</option>)}
-                              </select>
+                              <div>{Train.wayStart}</div>
                         </div>
                         <div>
                               <div>Путь прибытия</div>
@@ -260,7 +255,10 @@ const OperationOnStation = ({flagFunc, CancelTrains, SetCancelTrains, CH, NotCH,
             <hr />
             <div className='submit'>
                 <div style={{color: '#15386C', fontWeight: 800, display: 'flex', flexDirection: 'column', gap: 20}}>
-                    <div onClick={()=>nextOperation(Train.number)}>Отмена</div>
+                    <div onClick={()=>{
+                        nextOperation()
+                        CancelTrain(Train)
+                    }}>Отмена</div>
                     <div onClick={()=>flagFunc(false)}>Отменить всё</div>
                 </div>
                 
