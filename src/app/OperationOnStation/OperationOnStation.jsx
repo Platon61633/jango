@@ -4,8 +4,25 @@ import '../OperationOnStation.css'
 import axios from 'axios';
 import Loader from '@/components/Loader';
 
+// -----------------------------------------------
 
-const OperationOnStation = ({flagFunc, CancelTrain, CH, NotCH, SetMovingTrain, MovingTrain, numberOperation}) => {
+// -----------------------------------------------
+
+// -----------------------------------------------
+// 
+// -----------------------------------------------
+// -------------------------------------------------Сделай операции между станциями
+// --------------------------------------------------------------------------------
+// ------------------------------
+// -----------------------------------------------
+// ---------------------------------------------
+// ---------------------------------------------
+// ---------------------------------------------
+// ---------------------------------------------
+// ---------------------------------------------
+// ---------------------------------------------
+
+const OperationOnStation = ({station, flagFunc, CancelTrain, CH, NotCH, SetMovingTrain, MovingTrain, numberOperation}) => {
 
 
     const Train = MovingTrain[numberOperation]
@@ -36,7 +53,7 @@ const OperationOnStation = ({flagFunc, CancelTrain, CH, NotCH, SetMovingTrain, M
 'Подача вагонов', 'Уборка вагонов', 'Взвешивание вагонов', 'Очистка вагонов от снега', 'Ст. Междуреченск - перестановка из парка в парк',
 'Отцепка вагонов от состава', 'Выгрузка', 'Погрузка', 'Очистка вагонов от снега']
     
-    const Parks = ['А', 'Б', 'В', 'П']
+    // const Parks = ['Полосухино', 'Ольжерасская', 'Новокузнецк Северный', 'Новокузнецк Северный']
 
     
     
@@ -144,40 +161,27 @@ const OperationOnStation = ({flagFunc, CancelTrain, CH, NotCH, SetMovingTrain, M
                         <div>
                               <div>Станция отправления</div>
                               <select ref={RefStartStation}>
-                                  {['Новкузнецк Северный', 'Новкузнецк Северный',
-                                  'Новкузнецк Северный', 'Новкузнецк Северный'].map((e, id)=>
-                                    <option key={id} value={e}>{e}</option>
+                                  {[{title: 'Полосухино', value: 'po'}, 
+                                  {title: 'Ольжерасская', value: 'ol'}, 
+                                  {title: 'Новокузнецк Северный', value: 'ns'}, 
+                                  {title: 'Есауловка', value: 'es'}].map((e, id)=>
+                                    <option selected={e.value==station} key={id} value={e.value} >{e.title}</option>
                                   )}
                               </select>
                         </div>
                         <div>
                               <div>Станция прибытия</div>
                               <select ref={RefFinishStation}>
-                                  {['Новкузнецк Северный', 'Новкузнецк Северный',
-                                  'Новкузнецк Северный', 'Новкузнецк Северный'].map((e, id)=>
-                                    <option key={id} value={e} >{e}</option>
+                                  {[{title: 'Полосухино', value: 'po'}, 
+                                  {title: 'Ольжерасская', value: 'ol'}, 
+                                  {title: 'Новокузнецк Северный', value: 'ns'}, 
+                                  {title: 'Есауловка', value: 'es'}].map((e, id)=>
+                                    <option selected={e.value==station} key={id} value={e.value} >{e.title}</option>
                                   )}
                               </select>
                         </div>
                     </div>
-                    <div className='p'>
-                        <div>
-                              <div>Парк отправления</div>
-                              <select ref={RefStartPark}>
-                                <option>Выберите из списка</option>
-                                  {Parks.map((e, id)=>
-                                  <option key={id}>{e}</option>)}
-                              </select>
-                        </div>
-                        <div>
-                              <div>Парк прибытия</div>
-                              <select ref={RefFinishPark}>
-                                <option>Выберите из списка</option>
-                                  {Parks.map((e, id)=>
-                                  <option key={id}>{e}</option>)}
-                              </select>
-                        </div>
-                    </div>
+                    
                     <div className='p'>
                         <div>
                               <div>Путь отправления</div>

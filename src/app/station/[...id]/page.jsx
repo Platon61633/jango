@@ -4,7 +4,6 @@ import axios from "axios";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import OperationOnStation from '../../OperationOnStation/OperationOnStation';
-import { useCookies } from 'react-cookie';
 
 
 
@@ -705,7 +704,7 @@ const Station = ({params}) => {
         </div>
       </div>
       {/* <div onClick={PostTrains} className="posttrain"> */}
-      <div onClick={()=>{console.log(cookies);}} className="posttrain">
+      <div onClick={()=>{console.log('dd')}} className="posttrain">
         Click
       </div>
       <div>
@@ -718,7 +717,7 @@ const Station = ({params}) => {
 
          </div>
          {OperationF?MovingTrain.map((e, id)=>
-            <OperationOnStation flagFunc={SetOperationF} CancelTrain={CancelTrain} CH={Loco.CH[MovingTrain[0].wayStart-1]} NotCH={Loco.NotCH[MovingTrain[0].wayStart-1]} SetMovingTrain={SetMovingTrain} MovingTrain={MovingTrain} numberOperation={id} />
+            <OperationOnStation station={params.id[2]} flagFunc={SetOperationF} CancelTrain={CancelTrain} CH={Loco.CH[MovingTrain[0].wayStart-1]} NotCH={Loco.NotCH[MovingTrain[0].wayStart-1]} SetMovingTrain={SetMovingTrain} MovingTrain={MovingTrain} numberOperation={id} />
          )
          :null}
      </div>

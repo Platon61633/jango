@@ -78,7 +78,6 @@ const Login = () => {
                     </div>
                 </section>
             </div>
-            <div onClick={()=>console.log(cookies)}>click</div>
         </div>
     );
 };
