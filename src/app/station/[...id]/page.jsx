@@ -54,7 +54,10 @@ const Station = ({params}) => {
     const _FA = async ()=> {
       await axios.get(`https://evraz-back.vercel.app/api?need=station&station=${params.id[2]}&id=${params.id[0]}&password=${params.id[1]}`)
       .then(e=>{
+        if (Boolean(e.data.trains)){
+          
         const arr = e.data.trains
+        console.log(e.data.trains);
         let ColorSobArr = []
         for (let ii = 0; ii < arr.length; ii++) {
           for (let i = 0; i < arr[ii].length; i++) {
@@ -95,7 +98,7 @@ const Station = ({params}) => {
         SetTrains(e.data.trains)
         SetLoco({CH: e.data.CH, NotCH: e.data.NotCH})
         // console.log(e.data.CH);
-      })
+      }})
         
     }
     _FA()
