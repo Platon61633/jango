@@ -706,8 +706,8 @@ const Station = ({params}) => {
         }
         </div>
       </div>
-      {/* <div onClick={PostTrains} className="posttrain"> */}
-      <div onClick={()=>{console.log('dd')}} className="posttrain">
+      <div onClick={PostTrains} className="posttrain">
+      {/* <div onClick={()=>{console.log('dd')}} className="posttrain"> */}
         Click
       </div>
       <div>
