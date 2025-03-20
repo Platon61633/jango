@@ -720,7 +720,7 @@ const Station = ({params}) => {
 
          </div>
          {OperationF?MovingTrain.map((e, id)=>
-            <OperationOnStation station={params.id[2]} flagFunc={SetOperationF} CancelTrain={CancelTrain} CH={Loco.CH[MovingTrain[0].wayStart-1]} NotCH={Loco.NotCH[MovingTrain[0].wayStart-1]} SetMovingTrain={SetMovingTrain} MovingTrain={MovingTrain} numberOperation={id} />
+            <OperationOnStation station={params.id[2]} key={id} flagFunc={SetOperationF} CancelTrain={CancelTrain} CH={Loco.CH[MovingTrain[0].wayStart-1]} NotCH={Loco.NotCH[MovingTrain[0].wayStart-1]} SetMovingTrain={SetMovingTrain} MovingTrain={MovingTrain} numberOperation={id} />
          )
          :null}
      </div>
