@@ -137,7 +137,7 @@ const OperationOnStation = ({station, flagFunc, CancelTrain, CH, NotCH, SetMovin
                         <div>Вид операции</div>
                         
                         <select ref={RefType}>
-                                 <option>Выберите из списка</option>
+                                <option>Выберите из списка</option>
                             {TypeOperation.map((e,id)=>
                                 <option value={e} key={id}>{e}</option>
                             )}
@@ -212,7 +212,7 @@ const OperationOnStation = ({station, flagFunc, CancelTrain, CH, NotCH, SetMovin
                 </div>
                 {CH?
                 CH.map((e,id)=>
-                <div className='item'>
+                <div key={id} className='item'>
                     <div>
                         <div>Чёт. Локомотив №{id+1}</div>
                         <select>
@@ -234,7 +234,7 @@ const OperationOnStation = ({station, flagFunc, CancelTrain, CH, NotCH, SetMovin
                 null}
                 {NotCH?
                 NotCH.map((e,id)=>
-                    <div className='item'>
+                    <div key={id} className='item'>
                         <div>
                             <div>Нечёт. Локомотив №{id+1}</div>
                             <select>
