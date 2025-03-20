@@ -1,5 +1,5 @@
 "use client"
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../login.css'
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -16,6 +16,13 @@ const Login = () => {
     
     
     const RefName = useRef(null)
+
+    // useEffect(
+    //     ()=>{
+    //         axios.get('https://backy-hse.vercel.app/?need=register')
+    //         .then(e=>console.log())
+    //     }, []
+    // )
 
     const Authorization = async ()=>{
         await axios.post("https://evraz-back.vercel.app/api?need=authorization", [Name, Password])
